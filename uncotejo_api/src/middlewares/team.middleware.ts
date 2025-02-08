@@ -11,8 +11,6 @@ export function validateTeam(req: Request, res: Response, next: NextFunction): v
         colorSecondary,
         shieldForm,
         shieldInterior,
-        teamLeaderId,
-        players,
     } = req.body;
 
     if (

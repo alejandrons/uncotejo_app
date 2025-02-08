@@ -3,6 +3,7 @@ import MatchService from '../services/match.service';
 import { IAuthRequest, authMiddleware } from '../middlewares/auth.middleware';
 import { IMatch } from '../views/match';
 import { validateLeadership } from '../middlewares/team.middleware';
+import { validateCreateMatch } from '../middlewares/match.middleware';
 
 const router = Router();
 
@@ -11,6 +12,7 @@ router.post(
     '/',
     authMiddleware,
     validateLeadership,
+    validateCreateMatch,
     async (req: IAuthRequest, res: Response): Promise<void> => {
         try {
             const match: IMatch = await MatchService.createMatch(req.body);
