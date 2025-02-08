@@ -1,12 +1,79 @@
-import { Table, Column, Model } from 'sequelize-typescript';
+import {
+    Table,
+    Column,
+    Model,
+    DataType,
+    BeforeCreate,
+    BeforeUpdate,
+    Unique,
+} from 'sequelize-typescript';
+import bcrypt from 'bcryptjs';
+import { IUser } from '../views/user';
+import { Gender, Position, Role } from '../utils/enums';
 
 @Table({
-  tableName: 'users',
+    tableName: 'users',
+    timestamps: true,
 })
-export default class UserModel extends Model {
-  @Column
-  name!: string;
+export default class User extends Model<IUser> {
+    @Column({
+        type: DataType.STRING,
+        allowNull: false,
+    })
+    firstName!: string;
 
-  @Column
-  email!: string;
+    @Column({
+        type: DataType.STRING,
+        allowNull: false,
+    })
+    lastName!: string;
+
+    @Column({
+        type: DataType.ENUM(...Object.values(Gender)),
+        allowNull: true,
+    })
+    gender?: Gender;
+
+    @Column({
+        type: DataType.ENUM(...Object.values(Position)),
+        allowNull: true,
+    })
+    position?: Position;
+
+    @Column({
+        type: DataType.ENUM(...Object.values(Role)),
+        allowNull: false,
+        defaultValue: Role.Player,
+    })
+    role!: Role;
+
+    @Unique
+    @Column({
+        type: DataType.STRING,
+        allowNull: false,
+        unique: true,
+        validate: {
+            isEmail: true,
+        },
+    })
+    email!: string;
+
+    @Column({
+        type: DataType.STRING,
+        allowNull: false,
+    })
+    password!: string;
+
+    @BeforeCreate
+    @BeforeUpdate
+    static hashPassword(instance: User) {
+        if (instance.password) {
+            instance.password = bcrypt.hashSync(instance.password, 10);
+        }
+    }
+
+    // 🔹 Comparar contraseña en el login
+    checkPassword(password: string): boolean {
+        return bcrypt.compareSync(password, this.password);
+    }
 }
