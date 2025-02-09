@@ -6,10 +6,13 @@ import {
     BeforeCreate,
     BeforeUpdate,
     Unique,
+    BelongsTo,
+    ForeignKey,
 } from 'sequelize-typescript';
 import bcrypt from 'bcryptjs';
 import { IUser } from '../views/user';
 import { Gender, Position, Role } from '../utils/enums';
+import Team from './team.model';
 
 @Table({
     tableName: 'users',
@@ -63,6 +66,13 @@ export default class User extends Model<IUser> {
         allowNull: false,
     })
     password!: string;
+
+    @ForeignKey(() => Team)
+    @Column({ type: DataType.INTEGER, allowNull: true })
+    teamId!: number | null;
+
+    @BelongsTo(() => Team)
+    team!: Team;
 
     @BeforeCreate
     @BeforeUpdate

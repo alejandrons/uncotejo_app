@@ -3,15 +3,8 @@ import { IAuthRequest } from './auth.middleware';
 import { Role, ShieldForm, ShieldInterior } from '../utils/enums';
 
 export function validateTeam(req: Request, res: Response, next: NextFunction): void {
-    const {
-        name,
-        description,
-        slogan,
-        colorPrimary,
-        colorSecondary,
-        shieldForm,
-        shieldInterior,
-    } = req.body;
+    const { name, description, slogan, colorPrimary, colorSecondary, shieldForm, shieldInterior } =
+        req.body;
 
     if (
         !name ||

@@ -72,7 +72,8 @@ router.get('/link/:link', authMiddleware, async (req: Request, res: Response): P
 /* ACTUALIZAR */
 router.put(
     '/:id/match',
-    authMiddleware, validateLeadership,
+    authMiddleware,
+    validateLeadership,
     async (req: IAuthRequest, res: Response): Promise<void> => {
         try {
             const matchId = parseInt(req.params.id);
@@ -90,7 +91,8 @@ router.put(
 
 router.put(
     '/link/:link/match',
-    authMiddleware, validateLeadership,
+    authMiddleware,
+    validateLeadership,
     async (req: IAuthRequest, res: Response): Promise<void> => {
         try {
             const { link } = req.params;
