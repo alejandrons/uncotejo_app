@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'team_member_card.dart';
+import 'package:uncotejo_front/shared/widgets/bottom_navigation.dart';
 
 class TeamScreen extends StatelessWidget {
   const TeamScreen({super.key});
@@ -18,7 +19,6 @@ class TeamScreen extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            // Handle back button action
           },
         ),
       ),
@@ -27,7 +27,6 @@ class TeamScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Team Info Section
             CircleAvatar(
               radius: 50,
               backgroundColor: Colors.lightGreenAccent,
@@ -64,7 +63,6 @@ class TeamScreen extends StatelessWidget {
             const SizedBox(height: 8),
             ElevatedButton(
               onPressed: () {
-              // Handle leave team action
               },
               style: ElevatedButton.styleFrom(
               backgroundColor: Colors.grey[400],
@@ -76,7 +74,6 @@ class TeamScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
-            // Team Members Section
             Expanded(
               child: ListView(
                 children: [
@@ -85,7 +82,6 @@ class TeamScreen extends StatelessWidget {
                     isLeader: true,
                     isCurrentUserLeader: isCurrentUserLeader,
                     onLeaderTransfer: () {
-                      // Handle leader transfer action
                     },
                   ),
                   const SizedBox(height: 8),
@@ -93,7 +89,6 @@ class TeamScreen extends StatelessWidget {
                     name: 'Atulya',
                     isCurrentUserLeader: isCurrentUserLeader,
                     onExpel: () {
-                      // Handle expel member action
                     },
                   ),
                   const SizedBox(height: 8),
@@ -110,27 +105,7 @@ class TeamScreen extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.sports_soccer),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.sports),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.emoji_events),
-            label: '',
-          ),
-        ],
-      ),
+      bottomNavigationBar: const BottomNavigation(),
     );
   }
 }
