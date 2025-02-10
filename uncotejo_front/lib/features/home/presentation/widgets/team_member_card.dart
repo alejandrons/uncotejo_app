@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class TeamMemberCard extends StatelessWidget {
   final String name;
   final bool isLeader;
+  final bool isCurrentUserLeader;
   final VoidCallback? onLeaderTransfer;
   final VoidCallback? onExpel;
 
@@ -10,6 +11,7 @@ class TeamMemberCard extends StatelessWidget {
     Key? key,
     required this.name,
     this.isLeader = false,
+    required this.isCurrentUserLeader,
     this.onLeaderTransfer,
     this.onExpel,
   }) : super(key: key);
@@ -19,23 +21,32 @@ class TeamMemberCard extends StatelessWidget {
     return Card(
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: Colors.grey,
+          backgroundColor: Colors.greenAccent,
           child: const Icon(Icons.person),
         ),
         title: Text(name),
         subtitle: isLeader ? const Text('Líder de equipo') : null,
-        trailing: isLeader
-            ? TextButton(
-                onPressed: onLeaderTransfer,
-                child: const Text('Ceder puesto'),
-              )
-            : TextButton(
-                onPressed: onExpel,
-                child: const Text('Expulsar'),
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.red,
-                ),
-              ),
+        trailing: isCurrentUserLeader
+            ? isLeader
+                ? TextButton(
+                    onPressed: onLeaderTransfer,
+                    child: const Text('Ceder puesto',
+                    style: TextStyle(color: Colors.black),
+                    ),
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.lightGreen[100],
+                    ),
+                  )
+                : TextButton(
+                    onPressed: onExpel,
+                    child: const Text('Expulsar',
+                    style: TextStyle(color: Colors.white),
+                    ),
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.red,
+                    ),
+                  )
+            : null,
       ),
     );
   }
