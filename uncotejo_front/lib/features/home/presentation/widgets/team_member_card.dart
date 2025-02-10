@@ -8,13 +8,13 @@ class TeamMemberCard extends StatelessWidget {
   final VoidCallback? onExpel;
 
   const TeamMemberCard({
-    Key? key,
+    super.key,
     required this.name,
     this.isLeader = false,
     required this.isCurrentUserLeader,
     this.onLeaderTransfer,
     this.onExpel,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -30,20 +30,22 @@ class TeamMemberCard extends StatelessWidget {
             ? isLeader
                 ? TextButton(
                     onPressed: onLeaderTransfer,
-                    child: const Text('Ceder puesto',
-                    style: TextStyle(color: Colors.black),
-                    ),
                     style: TextButton.styleFrom(
                       backgroundColor: Colors.lightGreen[100],
                     ),
-                  )
-                : TextButton(
-                    onPressed: onExpel,
-                    child: const Text('Expulsar',
-                    style: TextStyle(color: Colors.white),
+                    child: const Text(
+                      'Ceder puesto',
+                      style: TextStyle(color: Colors.black),
                     ),
+                    )
+                  : TextButton(
                     style: TextButton.styleFrom(
                       backgroundColor: Colors.red,
+                    ),
+                    onPressed: onExpel,
+                    child: const Text(
+                      'Expulsar',
+                      style: TextStyle(color: Colors.white),
                     ),
                   )
             : null,
