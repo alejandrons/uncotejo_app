@@ -53,10 +53,12 @@ class TeamScreen extends StatelessWidget {
             const SizedBox(height: 8),
             ElevatedButton(
               onPressed: _copyTeamLink,
-              child: const Text('Copiar link del equipo',
-              style: TextStyle(color: Colors.black),),
               style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.grey[400]
+              backgroundColor: Colors.grey[400],
+              ),
+              child: const Text(
+              'Copiar link del equipo',
+              style: TextStyle(color: Colors.black),
               ),
             ),
             const SizedBox(height: 8),
@@ -64,10 +66,12 @@ class TeamScreen extends StatelessWidget {
               onPressed: () {
               // Handle leave team action
               },
-              child: const Text('Abandonar equipo',
-              style: TextStyle(color: Colors.black),),
               style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.grey[400]
+              backgroundColor: Colors.grey[400],
+              ),
+              child: const Text(
+              'Abandonar equipo',
+              style: TextStyle(color: Colors.black),
               ),
             ),
             const SizedBox(height: 20),
