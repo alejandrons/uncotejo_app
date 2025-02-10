@@ -2,16 +2,22 @@ import 'package:flutter/material.dart';
 import 'team_member_card.dart';
 import 'package:uncotejo_front/shared/widgets/bottom_navigation.dart';
 
-class TeamScreen extends StatelessWidget {
+class TeamScreen extends StatefulWidget {
   const TeamScreen({super.key});
 
+  @override
+  _TeamScreenState createState() => _TeamScreenState();
+}
+
+class _TeamScreenState extends State<TeamScreen> {
+  bool isCurrentUserLeader = true;
+
   void _copyTeamLink() {
+    // Handle copy team link action
   }
 
   @override
   Widget build(BuildContext context) {
-    bool isCurrentUserLeader = true;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Mi Equipo'),
@@ -19,6 +25,7 @@ class TeamScreen extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
+            // Handle back button action
           },
         ),
       ),
@@ -63,6 +70,7 @@ class TeamScreen extends StatelessWidget {
             const SizedBox(height: 8),
             ElevatedButton(
               onPressed: () {
+              // Handle leave team action
               },
               style: ElevatedButton.styleFrom(
               backgroundColor: Colors.grey[400],
@@ -82,6 +90,7 @@ class TeamScreen extends StatelessWidget {
                     isLeader: true,
                     isCurrentUserLeader: isCurrentUserLeader,
                     onLeaderTransfer: () {
+                      // Handle leader transfer action
                     },
                   ),
                   const SizedBox(height: 8),
@@ -89,6 +98,7 @@ class TeamScreen extends StatelessWidget {
                     name: 'Atulya',
                     isCurrentUserLeader: isCurrentUserLeader,
                     onExpel: () {
+                      // Handle expel member action
                     },
                   ),
                   const SizedBox(height: 8),

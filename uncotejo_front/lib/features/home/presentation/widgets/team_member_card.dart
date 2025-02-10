@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class TeamMemberCard extends StatelessWidget {
+class TeamMemberCard extends StatefulWidget {
   final String name;
   final bool isLeader;
   final bool isCurrentUserLeader;
@@ -17,6 +17,11 @@ class TeamMemberCard extends StatelessWidget {
   });
 
   @override
+  _TeamMemberCardState createState() => _TeamMemberCardState();
+}
+
+class _TeamMemberCardState extends State<TeamMemberCard> {
+  @override
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
@@ -24,12 +29,12 @@ class TeamMemberCard extends StatelessWidget {
           backgroundColor: Colors.greenAccent,
           child: const Icon(Icons.person),
         ),
-        title: Text(name),
-        subtitle: isLeader ? const Text('Líder de equipo') : null,
-        trailing: isCurrentUserLeader
-            ? isLeader
+        title: Text(widget.name),
+        subtitle: widget.isLeader ? const Text('Líder de equipo') : null,
+        trailing: widget.isCurrentUserLeader
+            ? widget.isLeader
                 ? TextButton(
-                    onPressed: onLeaderTransfer,
+                    onPressed: widget.onLeaderTransfer,
                     style: TextButton.styleFrom(
                       backgroundColor: Colors.lightGreen[100],
                     ),
@@ -37,12 +42,12 @@ class TeamMemberCard extends StatelessWidget {
                       'Ceder puesto',
                       style: TextStyle(color: Colors.black),
                     ),
-                    )
-                  : TextButton(
+                  )
+                : TextButton(
                     style: TextButton.styleFrom(
                       backgroundColor: Colors.red,
                     ),
-                    onPressed: onExpel,
+                    onPressed: widget.onExpel,
                     child: const Text(
                       'Expulsar',
                       style: TextStyle(color: Colors.white),
