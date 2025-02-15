@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../shared/widgets/bottom_navigation.dart';
 import '../../../shared/widgets/primary_button.dart';
 
 class HomePage extends StatelessWidget {
@@ -17,6 +18,7 @@ class HomePage extends StatelessWidget {
           },
         ),
       ),
+      bottomNavigationBar: const BottomNavigation(),
     );
   }
 }
