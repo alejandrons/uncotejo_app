@@ -3,8 +3,10 @@ import jwt from 'jsonwebtoken';
 import { IUser } from '../views/user';
 import { Role } from '../utils/enums';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'secreto_super_seguro';
-
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+    throw new Error("JWT_SECRET no está definido en las variables de entorno.");
+}
 export default class UserService {
     static async register(data: IUser): Promise<Pick<IUser, 'id' | 'email'>> {
         const existingUser = await User.findOne({ where: { email: data.email } });
@@ -31,7 +33,7 @@ export default class UserService {
             throw new Error('Credenciales incorrectas');
         }
 
-        const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, {
+        const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET!, {
             expiresIn: '24h',
         });
 
