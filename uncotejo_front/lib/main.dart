@@ -1,12 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:provider/provider.dart';
 import 'features/home/presentation/home_page.dart';
+import 'features/match/aplication/provider/match_provider.dart';
 import 'features/match/presentation/create_match_page.dart';
+import 'shared/utils/auth_mock.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load();
-  runApp(const MyApp());
+
+  // Simular inicio de sesión antes de arrancar la app
+  await AuthMock.login(dotenv.env['AUTH_EMAIL']!, dotenv.env['AUTH_PASSWORD']!);
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => MatchProvider()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -19,8 +33,8 @@ class MyApp extends StatelessWidget {
       title: 'Uncotejo',
       initialRoute: '/',
       routes: {
-        '/': (context) => HomePage(),
-        '/create-match': (context) => CreateMatchPage(),
+        '/': (context) => const HomePage(),
+        '/create-match': (context) => const CreateMatchPage(),
       },
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
