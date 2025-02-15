@@ -49,7 +49,7 @@ export default class Team extends Model<ITeam> {
 
     @Column({
         type: DataType.STRING,
-        allowNull: false,
+        allowNull: true,
     })
     colorSecondary!: string;
 
@@ -61,7 +61,7 @@ export default class Team extends Model<ITeam> {
 
     @Column({
         type: DataType.ENUM(...Object.values(ShieldInterior)),
-        allowNull: false,
+        allowNull: true,
     })
     shieldInterior!: ShieldInterior;
 

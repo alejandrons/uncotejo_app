@@ -11,9 +11,7 @@ export function validateTeam(req: Request, res: Response, next: NextFunction): v
         !description ||
         !slogan ||
         !colorPrimary ||
-        !colorSecondary ||
-        !shieldForm ||
-        !shieldInterior
+        !shieldForm 
     ) {
         res.status(400).json({ error: 'Todos los campos obligatorios deben estar completos.' });
         return;
