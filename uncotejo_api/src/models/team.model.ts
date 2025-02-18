@@ -19,6 +19,7 @@ export default class Team extends Model<ITeam> {
     @Column({
         type: DataType.STRING,
         allowNull: false,
+        unique: true,
     })
     name!: string;
 
@@ -75,10 +76,10 @@ export default class Team extends Model<ITeam> {
     @Column
     teamLeaderId!: number;
 
-    @BelongsTo(() => User)
+    @BelongsTo(() => User, { as: 'teamLeader' })
     teamLeader!: User;
 
-    @HasMany(() => User)
+    @HasMany(() => User, { as: 'players' })
     players!: User[];
 
     async canAddPlayer(): Promise<boolean> {

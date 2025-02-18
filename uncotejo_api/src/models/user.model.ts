@@ -82,7 +82,6 @@ export default class User extends Model<IUser> {
         }
     }
 
-    // 🔹 Comparar contraseña en el login
     checkPassword(password: string): boolean {
         return bcrypt.compareSync(password, this.password);
     }
