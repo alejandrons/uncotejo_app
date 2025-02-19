@@ -1,3 +1,10 @@
+# Responsabilidades:
+- Noriega:  Register | Login 
+- Tomas: Ver equipo | Editar equipo
+- Camilo: Crear equipo | Unirse a equipo  | Jugador en equipo
+- Kevin: Todo el back  | Crear partido | Unirse a partido
+
+
 # uncotejo_front
 
 A new Flutter project.
