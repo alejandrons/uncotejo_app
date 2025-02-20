@@ -16,8 +16,7 @@ export const makeErrorResponse = (status: number, entity?: string) => {
 };
 
 export const HttpResponses: Record<number, string | ((entity?: string) => string)> = {
-    400: (entity?: string) =>
-        `Solicitud incorrecta. ${entity || 'La entidad'} contiene datos inválidos.`,
+    400: (entity?: string) => `Solicitud incorrecta. ${entity || 'La entidad'} verifique los datos`,
     401: 'No autorizado. Verifique sus credenciales.',
     403: 'Acceso prohibido. No tienes permisos para realizar esta acción.',
     404: (entity?: string) => `${entity || 'El recurso'} no fue encontrado.`,

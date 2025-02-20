@@ -77,7 +77,7 @@ export default class User extends Model<IUser> {
     @BeforeCreate
     @BeforeUpdate
     static hashPassword(instance: User) {
-        if (instance.password) {
+        if (instance.changed('password')) {
             instance.password = bcrypt.hashSync(instance.password, 10);
         }
     }

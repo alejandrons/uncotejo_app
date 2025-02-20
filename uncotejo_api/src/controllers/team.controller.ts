@@ -81,7 +81,6 @@ router.put(
         try {
             const { linkAccess } = req.params;
             const team = await TeamService.getTeamByLink(linkAccess);
-
             await TeamService.addPlayerToTeam(req.user!.id, team!.id!);
             res.json({ message: 'Te has unido al equipo', team });
         } catch (error) {
@@ -92,16 +91,12 @@ router.put(
 
 /* ELIMINAR */
 router.delete(
-    '/:id/remove/:playerId',
+    '/remove/:playerId',
     authMiddleware,
     validateLeadership,
     async (req: IAuthRequest, res: Response) => {
         try {
-            await TeamService.removePlayerFromTeam(
-                req.user!.id,
-                parseInt(req.params.playerId),
-                parseInt(req.params.id),
-            );
+            await TeamService.removePlayerFromTeam(parseInt(req.params.playerId));
             res.json({ message: 'Jugador eliminado del equipo' });
         } catch (error) {
             handleErrorResponse(res, error);
@@ -109,13 +104,29 @@ router.delete(
     },
 );
 
-router.delete('/:id/leave', authMiddleware, async (req: IAuthRequest, res: Response) => {
+router.delete('/leave', authMiddleware, async (req: IAuthRequest, res: Response) => {
     try {
-        await TeamService.leaveTeam(req.user!.id, parseInt(req.params.id));
+        await TeamService.leaveTeam(req.user!.id);
         res.json({ message: 'Has salido del equipo.' });
     } catch (error) {
         handleErrorResponse(res, error);
     }
 });
+
+router.put(
+    '/transfer/:playerId',
+    authMiddleware,
+    validateLeadership,
+    async (req: IAuthRequest, res: Response) => {
+        try {
+            await TeamService.transferLeadership(parseInt(req.params.playerId), req.user!.id);
+            res.json({
+                message: `has transferido el liderazgo al usuario: ${req.params.playerId} `,
+            });
+        } catch (error) {
+            handleErrorResponse(res, error);
+        }
+    },
+);
 
 export default router;

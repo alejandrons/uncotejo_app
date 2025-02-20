@@ -4,6 +4,9 @@ import { ITeam } from '../views/team';
 import { Role } from '../utils/enums';
 import User from '../models/user.model';
 import { makeErrorResponse } from '../utils/errorHandler';
+import Match from '../models/match.model';
+import { Op } from 'sequelize';
+import sequelize from '../config/db';
 
 export default class TeamService {
     static async createTeam(data: ITeam, requesterId: number): Promise<ITeam> {
@@ -40,8 +43,7 @@ export default class TeamService {
 
         user.role = Role.TeamLeader;
         user.teamId = newTeam.id;
-
-        await user.save({ fields: ['role'] });
+        await user.save({ fields: ['role', 'teamId'] });
 
         return newTeam;
     }
@@ -89,6 +91,11 @@ export default class TeamService {
     }
 
     static async addPlayerToTeam(playerId: number, teamId: number): Promise<void> {
+        let user = await User.findByPk(playerId);
+        if (!user) {
+            throw makeErrorResponse(404, 'usuario');
+        }
+
         const team = await Team.findByPk(teamId, {
             include: [
                 { model: User, as: 'teamLeader' },
@@ -99,69 +106,138 @@ export default class TeamService {
 
         const existingPlayer = await team.$has('players', playerId);
         if (existingPlayer) {
-            console.log('aqui');
             throw makeErrorResponse(409, 'El usuario ya es parte de este equipo.');
         }
 
         if (!(await team.canAddPlayer())) {
             throw makeErrorResponse(409, 'El equipo ha alcanzado el número máximo de jugadores.');
         }
-
+        user.teamId = team.id;
+        await user.save({ fields: ['teamId'] });
         await team.$add('players', playerId);
     }
 
-    static async transferLeadership(newLeaderId: number, teamId: number): Promise<void> {
-        const team = await Team.findByPk(teamId);
-        if (!team) {
-            throw makeErrorResponse(404, 'Equipo');
+    static async transferLeadership(newLeaderId: number, teamLeaderId: number): Promise<void> {
+        const transaction = await sequelize.transaction();
+        try {
+            const oldLeader = await User.findByPk(teamLeaderId, { transaction });
+            if (!oldLeader) {
+                throw makeErrorResponse(404, 'Líder actual');
+            }
+
+            const newLeader = await User.findByPk(newLeaderId, { transaction });
+            if (!newLeader) {
+                throw makeErrorResponse(404, 'Usuario');
+            }
+
+            if (oldLeader.teamId === null) {
+                throw makeErrorResponse(404, 'Equipo no encontrado.');
+            }
+            const team = await Team.findByPk(oldLeader.teamId, { transaction });
+            if (!team) {
+                throw makeErrorResponse(404, 'Equipo');
+            }
+
+            console.log('Antes de actualizar:', { oldLeader, newLeader, team });
+
+            await oldLeader.update(
+                { role: Role.Player },
+                { where: { id: oldLeader.id }, transaction },
+            );
+            await newLeader.update(
+                { role: Role.TeamLeader },
+                { where: { id: newLeader.id }, transaction },
+            );
+            await team.update(
+                { teamLeaderId: newLeaderId },
+                { where: { id: team.id }, transaction },
+            );
+
+            const updatedTeam = await Team.findByPk(team.id, { transaction });
+            const updatedOldLeader = await User.findByPk(oldLeader.id, { transaction });
+            const updatedNewLeader = await User.findByPk(newLeader.id, { transaction });
+
+            console.log('Después de actualizar:', {
+                updatedOldLeader,
+                updatedNewLeader,
+                updatedTeam,
+            });
+
+            await transaction.commit();
+        } catch (error) {
+            await transaction.rollback();
+            throw error;
         }
-
-        const oldLeader = await User.findByPk(team.teamLeaderId);
-        if (!oldLeader) {
-            throw makeErrorResponse(404, 'Líder actual');
-        }
-
-        const newLeader = await User.findByPk(newLeaderId);
-        if (!newLeader) {
-            throw makeErrorResponse(404, 'Usuario');
-        }
-
-        if (newLeader.role !== Role.Player) {
-            throw makeErrorResponse(409, 'Solo un jugador puede convertirse en líder.');
-        }
-
-        oldLeader.role = Role.Player;
-        newLeader.role = Role.TeamLeader;
-
-        await oldLeader.save();
-        await newLeader.save();
-
-        team.teamLeaderId = newLeaderId;
-        await team.save();
     }
 
-    static async removePlayerFromTeam(
-        leaderId: number,
-        playerId: number,
-        teamId: number,
-    ): Promise<void> {
-        const team = await Team.findByPk(teamId);
+    static async removePlayerFromTeam(playerId: number): Promise<void> {
+        let user = await User.findByPk(playerId);
+        if (!user) {
+            throw makeErrorResponse(404, 'usuario');
+        }
+
+        if (user.teamId === null) {
+            throw makeErrorResponse(404, 'Equipo no encontrado.');
+        }
+        const team = await Team.findByPk(user.teamId);
         if (!team) {
             throw makeErrorResponse(404, 'Equipo');
         }
 
-        if (playerId === leaderId) {
+        if (playerId === team.teamLeaderId) {
             throw makeErrorResponse(409, 'El líder del equipo no puede eliminarse a sí mismo.');
         }
 
+        user.teamId = null;
+        await user.save({ fields: ['teamId'] });
         await team.$remove('players', playerId);
     }
 
-    static async leaveTeam(userId: number, teamId: number): Promise<void> {
-        const team = await Team.findByPk(teamId, { include: [User] });
+    static async findMatchesByTeam(teamId: number): Promise<Match[]> {
+        return await Match.findAll({
+            where: {
+                [Op.or]: [{ homeTeamId: teamId }, { awayTeamId: teamId }],
+            },
+            include: [
+                { model: Team, as: 'homeTeam' },
+                { model: Team, as: 'awayTeam' },
+            ],
+        });
+    }
+
+    static async leaveTeam(userId: number): Promise<void> {
+        let user = await User.findByPk(userId);
+        if (!user) {
+            throw makeErrorResponse(404, 'usuario');
+        }
+
+        if (user.teamId === null) {
+            throw makeErrorResponse(404, 'Equipo no encontrado.');
+        }
+        const team = await Team.findByPk(user.teamId, {
+            include: [
+                { model: User, as: 'teamLeader' },
+                { model: User, as: 'players' },
+            ],
+        });
         if (!team) throw makeErrorResponse(404, 'Equipo');
 
         const playerCount = await team.$count('players');
+        if (playerCount === 0) {
+            const ongoingMatches = await TeamService.findMatchesByTeam(team.id);
+            if (ongoingMatches.length > 0) {
+                throw makeErrorResponse(
+                    409,
+                    'El líder del equipo no puede abandonarlo hasta finalizar todos los partidos.',
+                );
+            }
+
+            user.role = Role.Player;
+            user.teamId = null;
+            await user.save({ fields: ['role', 'teamId'] });
+            await team.destroy();
+            return;
+        }
 
         if (userId === team.teamLeaderId) {
             throw makeErrorResponse(
@@ -170,11 +246,13 @@ export default class TeamService {
             );
         }
 
-        if (playerCount === 0) {
-            await team.destroy();
-            return;
-        }
+        const isPlayerInTeam = team.players.some((player) => player.id === userId);
 
+        if (!isPlayerInTeam) {
+            throw makeErrorResponse(400, 'El usuario no pertenece a este equipo.');
+        }
+        user.teamId = null;
+        await user.save({ fields: ['teamId'] });
         await team.$remove('players', userId);
     }
 }

@@ -6,6 +6,10 @@ class MatchRepository {
   static const String _matchEndpoint = "/match";
 
   static Future<Match> createMatch(Match match) async {
+    print(match.fixedTime);
+    print(match.homeTeamId);
+    print(match.possibleDates.days);
+    print(match.possibleDates.from);
     final response = await HttpClient.post(
       "$_matchEndpoint/",
       match.toJson(),
@@ -28,7 +32,8 @@ class MatchRepository {
     return Match.fromJson(response);
   }
 
-  static Future<Match> makeMatchById(int matchId, int awayTeamId, TimeOfDay fixedTime) async {
+  static Future<Match> makeMatchById(
+      int matchId, int awayTeamId, TimeOfDay fixedTime) async {
     final response = await HttpClient.put(
       "$_matchEndpoint/$matchId/match",
       {
@@ -39,7 +44,8 @@ class MatchRepository {
     return Match.fromJson(response);
   }
 
-  static Future<Match> makeMatchByLink(String link, int awayTeamId, TimeOfDay fixedTime) async {
+  static Future<Match> makeMatchByLink(
+      String link, int awayTeamId, TimeOfDay fixedTime) async {
     final response = await HttpClient.put(
       "$_matchEndpoint/link/$link/match",
       {
