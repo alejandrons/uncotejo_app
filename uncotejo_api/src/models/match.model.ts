@@ -16,14 +16,14 @@ export default class Match extends Model {
     @Column({ type: DataType.INTEGER, allowNull: false })
     homeTeamId!: number;
 
-    @BelongsTo(() => Team, 'homeTeamId')
+    @BelongsTo(() => Team, { foreignKey: 'homeTeamId', as: 'homeTeam' })
     homeTeam!: Team;
 
     @ForeignKey(() => Team)
     @Column({ type: DataType.INTEGER, allowNull: true })
     awayTeamId!: number;
 
-    @BelongsTo(() => Team, 'awayTeamId')
+    @BelongsTo(() => Team, { foreignKey: 'awayTeamId', as: 'awayTeam' })
     awayTeam!: Team;
 
     @Column({ type: DataType.BOOLEAN, defaultValue: false })
