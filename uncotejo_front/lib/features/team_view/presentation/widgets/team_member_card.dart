@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uncotejo_front/shared/widgets/custom_widgets.dart';
 
 class TeamMemberCard extends StatefulWidget {
   final String name;
@@ -26,32 +27,23 @@ class _TeamMemberCardState extends State<TeamMemberCard> {
     return Card(
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: Colors.greenAccent,
           child: const Icon(Icons.person),
         ),
         title: Text(widget.name),
         subtitle: widget.isLeader ? const Text('Líder de equipo') : null,
         trailing: widget.isCurrentUserLeader
             ? widget.isLeader
-                ? TextButton(
-                    onPressed: widget.onLeaderTransfer,
-                    style: TextButton.styleFrom(
-                      backgroundColor: Colors.lightGreen[100],
-                    ),
-                    child: const Text(
-                      'Ceder puesto',
-                      style: TextStyle(color: Colors.black),
-                    ),
+                ? CustomTextButton(
+                    onPressed: widget.onLeaderTransfer!,
+                    text: 'Ceder puesto',
+                    backgroundColor: Colors.lightGreen[100],
+                    textColor: Colors.black,
                   )
-                : TextButton(
-                    style: TextButton.styleFrom(
-                      backgroundColor: Colors.red,
-                    ),
-                    onPressed: widget.onExpel,
-                    child: const Text(
-                      'Expulsar',
-                      style: TextStyle(color: Colors.white),
-                    ),
+                : CustomTextButton(
+                    onPressed: widget.onExpel!,
+                    text: 'Expulsar',
+                    backgroundColor: Colors.red,
+                    textColor: Colors.white,
                   )
             : null,
       ),

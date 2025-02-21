@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'features/home/presentation/widgets/team_screen.dart';
+import 'features/team_view/presentation/widgets/team_screen.dart';
 void main() {
   runApp(const MyApp());
 }
