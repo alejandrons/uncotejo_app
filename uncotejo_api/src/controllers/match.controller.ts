@@ -17,7 +17,7 @@ router.post(
     handleValidationErrors,
     async (req: IAuthRequest, res: Response) => {
         try {
-            const match: IMatch = await MatchService.createMatch(req.body);
+            const match: IMatch = await MatchService.createMatch(req.body, req.user!.id);
             res.status(201).json(match);
         } catch (error) {
             handleErrorResponse(res, error);
@@ -26,9 +26,18 @@ router.post(
 );
 
 /* LEER */
-router.get('/', authMiddleware, async (_req: Request, res: Response) => {
+router.get('/', authMiddleware, async (req: IAuthRequest, res: Response) => {
     try {
-        const matches: IMatch[] = await MatchService.getAllMatches();
+        const matches: IMatch[] = await MatchService.getAvailableMatches(req.user!.id);
+        res.status(200).json(matches);
+    } catch (error) {
+        handleErrorResponse(res, error);
+    }
+});
+
+router.get('/team', authMiddleware, async (req: IAuthRequest, res: Response) => {
+    try {
+        const matches = await MatchService.getMatchesForUserTeam(req.user!.id);
         res.status(200).json(matches);
     } catch (error) {
         handleErrorResponse(res, error);
@@ -59,15 +68,19 @@ router.get('/link/:link', authMiddleware, async (req: Request, res: Response) =>
 
 /* ACTUALIZAR */
 router.put(
-    '/:id/match',
+    '/:id',
     authMiddleware,
     validateLeadership,
     handleValidationErrors,
     async (req: IAuthRequest, res: Response) => {
         try {
             const matchId = parseInt(req.params.id);
-            const { awayTeamId, fixedTime } = req.body;
-            const match = await MatchService.makeMatchById(matchId, awayTeamId, fixedTime);
+            const match = await MatchService.makeMatchById(
+                matchId,
+                req.user!.id,
+                req.body.possibleDates,
+                req.body.fixedTime,
+            );
             res.status(200).json(match);
         } catch (error) {
             handleErrorResponse(res, error);
@@ -76,15 +89,19 @@ router.put(
 );
 
 router.put(
-    '/link/:link/match',
+    '/link/:link',
     authMiddleware,
     validateLeadership,
     handleValidationErrors,
     async (req: IAuthRequest, res: Response) => {
         try {
             const { link } = req.params;
-            const { awayTeamId, fixedTime } = req.body;
-            const match = await MatchService.makeMatchByLink(link, awayTeamId, fixedTime);
+            const match = await MatchService.makeMatchByLink(
+                link,
+                req.user!.id,
+                req.body.possibleDates,
+                req.body.fixedTime,
+            );
             res.status(200).json(match);
         } catch (error) {
             handleErrorResponse(res, error);

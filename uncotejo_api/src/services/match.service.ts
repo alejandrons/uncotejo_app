@@ -3,34 +3,81 @@ import Match from '../models/match.model';
 import Team from '../models/team.model';
 import { IMatch } from '../views/match';
 import { makeErrorResponse } from '../utils/errorHandler';
+import User from '../models/user.model';
+import { Op } from 'sequelize';
 
 export default class MatchService {
     /* CREAR */
-    static async createMatch(data: IMatch): Promise<Match> {
+    static async createMatch(data: IMatch, userId: number): Promise<Match> {
+        let user = await User.findByPk(userId);
+        if (!user) {
+            throw makeErrorResponse(404, 'Usuario');
+        }
+        if (!user.teamId) {
+            throw makeErrorResponse(400, 'El usuario no pertenece a ningún equipo');
+        }
+
+        let team = await Team.findOne({ where: { teamLeaderId: user.id } });
+        if (!team) {
+            throw makeErrorResponse(404, 'Equipo');
+        }
+
         this.validatePossibleDates(data.possibleDates);
 
         const link = `partido-${uuidv4()}`;
         return await Match.create({
             ...data,
             link,
+            homeTeamId: team.id,
             homeTeamAttendance: true,
             awayTeamAttendance: false,
         });
     }
 
     /* LEER */
-    static async getAllMatches(): Promise<Match[]> {
+    static async getAvailableMatches(userId: number): Promise<Match[]> {
+        const user = await User.findByPk(userId);
+
         return await Match.findAll({
+            where: {
+                awayTeamId: null,
+                ...(user?.teamId ? { homeTeamId: { [Op.ne]: user.teamId } } : {}),
+            },
             include: [
                 {
                     model: Team,
                     as: 'homeTeam',
-                    include: ['teamLeader'],
+                    include: [{ model: User, as: 'teamLeader' }],
                 },
                 {
                     model: Team,
                     as: 'awayTeam',
-                    include: ['teamLeader'],
+                    include: [{ model: User, as: 'teamLeader' }],
+                },
+            ],
+        });
+    }
+
+    static async getMatchesForUserTeam(userId: number): Promise<Match[]> {
+        const user = await User.findByPk(userId);
+        if (!user || !user.teamId) {
+            throw makeErrorResponse(400, 'El usuario no pertenece a ningún equipo');
+        }
+
+        return await Match.findAll({
+            where: {
+                [Op.or]: [{ homeTeamId: user.teamId }, { awayTeamId: user.teamId }],
+            },
+            include: [
+                {
+                    model: Team,
+                    as: 'homeTeam',
+                    include: [{ model: User, as: 'teamLeader' }],
+                },
+                {
+                    model: Team,
+                    as: 'awayTeam',
+                    include: [{ model: User, as: 'teamLeader' }],
                 },
             ],
         });
@@ -80,15 +127,29 @@ export default class MatchService {
     /* ACTUALIZAR */
     static async makeMatchById(
         matchId: number,
-        awayTeamId: number,
+        userId: number,
+        possibleDates: any,
         fixedTime: string,
     ): Promise<Match> {
+        let user = await User.findByPk(userId);
+        if (!user) {
+            throw makeErrorResponse(404, 'Usuario');
+        }
+        if (!user.teamId) {
+            throw makeErrorResponse(400, 'El usuario no pertenece a ningún equipo');
+        }
+
+        let awayTeam = await Team.findOne({ where: { teamLeaderId: user.id } });
         const match = await Match.findByPk(matchId);
-        const awayTeam = await Team.findByPk(awayTeamId);
 
         this.validateMatch(match, awayTeam);
+        console.log(match!.homeTeamId, awayTeam!.id);
+        if (awayTeam!.id === match!.homeTeamId) {
+            throw makeErrorResponse(409, 'El equipo visitante no puede ser el mismo que el local');
+        }
 
-        match!.awayTeamId = awayTeamId;
+        match!.awayTeamId = awayTeam!.id;
+        match!.possibleDates = possibleDates;
         match!.fixedTime = fixedTime;
         await match!.save();
         return match!;
@@ -96,18 +157,16 @@ export default class MatchService {
 
     static async makeMatchByLink(
         link: string,
-        awayTeamId: number,
+        userId: number,
+        possibleDates: any,
         fixedTime: string,
     ): Promise<Match> {
         const match = await Match.findOne({ where: { link } });
-        const awayTeam = await Team.findByPk(awayTeamId);
+        if (!match) {
+            throw makeErrorResponse(404, 'Partido no encontrado');
+        }
 
-        this.validateMatch(match, awayTeam);
-
-        match!.awayTeamId = awayTeamId;
-        match!.fixedTime = fixedTime;
-        await match!.save();
-        return match!;
+        return await MatchService.makeMatchById(match.id, userId, possibleDates, fixedTime);
     }
 
     static validatePossibleDates(possibleDates: {
