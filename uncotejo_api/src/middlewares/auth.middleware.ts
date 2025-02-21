@@ -25,3 +25,4 @@ export function authMiddleware(req: IAuthRequest, res: Response, next: NextFunct
         res.status(401).json({ error: 'Token inválido o expirado.' });
     }
 }
+
