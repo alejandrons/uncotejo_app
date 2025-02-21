@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'team_member_list.dart';
-import 'package:uncotejo_front/shared/widgets/bottom_navigation.dart';
+import 'widgets/team_member_list.dart';
 import 'package:uncotejo_front/shared/widgets/custom_widgets.dart';
 
 class TeamScreen extends StatefulWidget {
@@ -12,9 +11,20 @@ class TeamScreen extends StatefulWidget {
 
 class _TeamScreenState extends State<TeamScreen> {
   bool isCurrentUserLeader = true;
+  final String loggedInUserName = 'Armando'; // Replace with the actual logged-in user's name
 
   void _copyTeamLink() {
     // Handle copy team link action
+  }
+
+  void _transferLeadership(String memberName) {
+    // Handle transfer leadership action
+    print('Transferring leadership to $memberName');
+  }
+
+  void _expelMember(String memberName) {
+    // Handle expel member action
+    print('Expelling member $memberName');
   }
 
   @override
@@ -23,38 +33,26 @@ class _TeamScreenState extends State<TeamScreen> {
       {
         'name': 'Armando',
         'isLeader': true,
-        'onLeaderTransfer': () {
-          // Handle leader transfer action
-        },
+        'onLeaderTransfer': null,
         'onExpel': null,
       },
       {
         'name': 'Atulya',
         'isLeader': false,
-        'onLeaderTransfer': null,
-        'onExpel': () {
-          // Handle expel member action
-        },
+        'onLeaderTransfer': () => _transferLeadership('Atulya'),
+        'onExpel': () => _expelMember('Atulya'),
       },
       {
         'name': 'Voltaire',
         'isLeader': false,
-        'onLeaderTransfer': null,
-        'onExpel': () {
-          // Handle expel member action
-        },
+        'onLeaderTransfer': () => _transferLeadership('Voltaire'),
+        'onExpel': () => _expelMember('Voltaire'),
       },
     ];
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Mi Equipo'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            // Handle back button action
-          },
-        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -100,12 +98,12 @@ class _TeamScreenState extends State<TeamScreen> {
               child: TeamMemberList(
                 isCurrentUserLeader: isCurrentUserLeader,
                 teamMembers: teamMembers,
+                loggedInUserName: loggedInUserName,
               ),
             ),
           ],
         ),
       ),
-      bottomNavigationBar: const BottomNavigation(),
     );
   }
 }
