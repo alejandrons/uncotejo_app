@@ -7,6 +7,7 @@ export interface IUser {
     gender?: Gender;
     position?: Position;
     role: Role;
+    teamId?: number | null;
     email: string;
     password: string;
 }
