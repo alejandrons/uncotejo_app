@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
+import 'package:uncotejo_front/features/match/presentation/list_all_matches.dart';
 import 'features/home/presentation/home_page.dart';
 import 'features/match/aplication/match_provider.dart';
 import 'features/match/presentation/create_match_page.dart';
@@ -35,6 +36,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const HomePage(),
         '/create-match': (context) => const CreateMatchPage(),
+        '/list-matches': (context) => const MatchListScreen(),
       },
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),

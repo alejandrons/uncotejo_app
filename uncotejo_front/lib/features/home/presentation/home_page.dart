@@ -8,14 +8,27 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Inicio")),
+      appBar: AppBar(title: const Text("Inicio")),
       body: Center(
-        child: PrimaryButton(
-          label: "Crear Partido",
-          color: Colors.blueAccent,
-          onPressed: () {
-            Navigator.pushNamed(context, '/create-match');
-          },
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            PrimaryButton(
+              label: "Crear Partido",
+              color: Colors.blueAccent,
+              onPressed: () {
+                Navigator.pushNamed(context, '/create-match'); // Navega a crear partido
+              },
+            ),
+            const SizedBox(height: 16), // Espaciado entre botones
+            PrimaryButton(
+              label: "Listar Partidos",
+              color: Colors.green, // Diferente color para distinguirlo
+              onPressed: () {
+                Navigator.pushNamed(context, '/list-matches'); // Navega a listar partidos
+              },
+            ),
+          ],
         ),
       ),
       bottomNavigationBar: const BottomNavigation(),
