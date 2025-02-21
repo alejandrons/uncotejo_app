@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'widgets/team_member_list.dart';
 import 'package:uncotejo_front/shared/widgets/custom_widgets.dart';
 import 'package:uncotejo_front/shared/widgets/bottom_navigation.dart';
+import 'package:uncotejo_front/shared/widgets/primary_button.dart';
 
 class TeamScreen extends StatefulWidget {
   const TeamScreen({super.key});
@@ -83,16 +84,17 @@ class _TeamScreenState extends State<TeamScreen> {
               textAlign: TextAlign.center,
             ),
             const CustomSizedBox(height: 8),
-            CustomElevatedButton(
+            PrimaryButton(
               onPressed: _copyTeamLink,
-              text: 'Copiar link del equipo',
+              leftIcon: Icons.copy,
+              label: 'Copiar link del equipo',
             ),
             const CustomSizedBox(height: 8),
-            CustomElevatedButton(
+            PrimaryButton(
               onPressed: () {
                 // Handle leave team action
               },
-              text: 'Abandonar equipo',
+              label: 'Abandonar equipo',
             ),
             const CustomSizedBox(height: 20),
             Expanded(
