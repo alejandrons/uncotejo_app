@@ -12,6 +12,7 @@ const sequelize = new Sequelize({
     port: parseInt(process.env.DB_PORT || '3306'),
     dialect: process.env.DB_DIALECT as 'mysql',
     models: [path.resolve(__dirname, '../models')],
+    logging: false,
 });
 
 export default sequelize;

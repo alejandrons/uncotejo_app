@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
+import '../../../shared/exeptions/exception_controller.dart';
 import '../domain/match.dart';
 import 'package:uncotejo_front/shared/utils/http_client.dart';
 
 class MatchRepository {
   static const String _matchEndpoint = "/match";
 
-  static Future<Match> createMatch(Match match) async {
-    print(match.fixedTime);
-    print(match.homeTeamId);
-    print(match.possibleDates.days);
-    print(match.possibleDates.from);
-    final response = await HttpClient.post(
-      "$_matchEndpoint/",
-      match.toJson(),
-    );
-    return Match.fromJson(response);
-  }
+  static Future<Match> createMatch(Match match, {required BuildContext context}) async {
+  return await HttpClient.post(
+    "$_matchEndpoint/",
+    {
+      "possibleDates": match.possibleDates.toJson(),
+      "fixedTime": "${match.fixedTime.hour.toString().padLeft(2, '0')}:${match.fixedTime.minute.toString().padLeft(2, '0')}"
+    },
+  ).catchError((error) {
+    ExceptionController.handleException(context, error);
+    return Future<Map<String, dynamic>>.error(error);
+  }).then((response) => Match.fromJson(response));
+}
+
 
   static Future<List<Match>> getAllMatches() async {
     final response = await HttpClient.get("$_matchEndpoint/");
@@ -38,7 +41,7 @@ class MatchRepository {
       "$_matchEndpoint/$matchId/match",
       {
         "awayTeamId": awayTeamId,
-        "fixedTime": "${fixedTime.hour}:${fixedTime.minute}"
+        "fixedTime": "${fixedTime.hour.toString().padLeft(2, '0')}:${fixedTime.minute.toString().padLeft(2, '0')}"
       },
     );
     return Match.fromJson(response);
@@ -50,7 +53,7 @@ class MatchRepository {
       "$_matchEndpoint/link/$link/match",
       {
         "awayTeamId": awayTeamId,
-        "fixedTime": "${fixedTime.hour}:${fixedTime.minute}"
+        "fixedTime": "${fixedTime.hour.toString().padLeft(2, '0')}:${fixedTime.minute.toString().padLeft(2, '0')}"
       },
     );
     return Match.fromJson(response);

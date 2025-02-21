@@ -9,7 +9,7 @@ class CreateMatchPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Crear Partido"),
-        
+
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

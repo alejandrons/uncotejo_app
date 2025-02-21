@@ -20,6 +20,17 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
 
   bool _isRangeMode = false;
 
+  // Mapa invertido: iniciales -> nombres completos
+  static const Map<String, String> dayMap = {
+    "L": "Lunes",
+    "M": "Martes",
+    "X": "Miércoles",
+    "J": "Jueves",
+    "V": "Viernes",
+    "S": "Sábado",
+    "D": "Domingo",
+  };
+
   Future<void> _pickDateRange() async {
     DateTimeRange? pickedRange = await showDateRangePicker(
       context: context,
@@ -48,6 +59,22 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
     });
   }
 
+  void _toggleDaySelection(String dayInitial) {
+    String fullDayName = dayMap[dayInitial]!;
+
+    setState(() {
+      if (_selectedDays.contains(fullDayName)) {
+        _selectedDays.remove(fullDayName);
+      } else {
+        _selectedDays.add(fullDayName);
+      }
+    });
+
+    _dateController.text = _selectedDays.join(', ');
+
+    widget.onDateSelected(_startDate, _endDate, _selectedDays);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -74,11 +101,11 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  for (var day in ["D", "L", "M", "X", "J", "V", "S"])
+                  for (var dayInitial in dayMap.keys)
                     DayCircle(
-                      dayInitial: day,
-                      isSelected: _selectedDays.contains(day),
-                      onTap: () => _toggleDaySelection(day),
+                      dayInitial: dayInitial,
+                      isSelected: _selectedDays.contains(dayMap[dayInitial]),
+                      onTap: () => _toggleDaySelection(dayInitial),
                     ),
                 ],
               ),
@@ -86,20 +113,5 @@ class _DatePickerWidgetState extends State<DatePickerWidget> {
           ),
       ],
     );
-  }
-
-  void _toggleDaySelection(String day) {
-    setState(() {
-      if (_selectedDays.contains(day)) {
-        _selectedDays.remove(day);
-      } else {
-        _selectedDays.add(day);
-      }
-    });
-
-    _dateController.text =
-        _selectedDays.map((d) => DayCircle.dayNames[d] ?? d).join(', ');
-
-    widget.onDateSelected(_startDate, _endDate, _selectedDays);
   }
 }
