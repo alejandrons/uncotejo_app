@@ -12,17 +12,17 @@ class DayCircle extends StatelessWidget {
     required this.onTap,
   });
 
-  static const Map<String, String> dayNames = {
-    "L": "Lunes",
-    "M": "Martes",
-    "X": "Miércoles",
-    "J": "Jueves",
-    "V": "Viernes",
-    "S": "Sábado",
-    "D": "Domingo",
+  static const Map<String, String> dayMap = {
+    "Lunes": "L",
+    "Martes": "M",
+    "Miércoles": "X",
+    "Jueves": "J",
+    "Viernes": "V",
+    "Sábado": "S",
+    "Domingo": "D",
   };
 
-  String get fullDayName => dayNames[dayInitial] ?? dayInitial;
+  String get fullDayName => dayMap[dayInitial] ?? dayInitial;
 
   @override
   Widget build(BuildContext context) {

@@ -18,8 +18,8 @@ export enum Role {
 }
 
 export enum ShieldForm {
-    Round = 'round',
-    Square = 'square',
+    Maedellin = 'medellin.png',
+    Nacional = 'nacional.png',
     Triangle = 'triangle',
     Star = 'star',
     Hexagon = 'hexagon',
@@ -28,6 +28,7 @@ export enum ShieldForm {
     Shield3 = 'shield3',
     Shield4 = 'shield4',
     Shield5 = 'shield5',
+
 }
 
 export enum ShieldInterior {
