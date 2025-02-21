@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'widgets/team_member_list.dart';
 import 'package:uncotejo_front/shared/widgets/custom_widgets.dart';
+import 'package:uncotejo_front/shared/widgets/bottom_navigation.dart';
 
 class TeamScreen extends StatefulWidget {
   const TeamScreen({super.key});
@@ -104,6 +105,7 @@ class _TeamScreenState extends State<TeamScreen> {
           ],
         ),
       ),
+      bottomNavigationBar: const BottomNavigation(),
     );
   }
 }

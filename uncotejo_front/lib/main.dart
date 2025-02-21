@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
+import 'package:uncotejo_front/features/home/presentation/home_page.dart';
 import 'features/match/aplication/provider/match_provider.dart';
 import 'features/team_view/presentation/team_screen.dart';
 import 'features/match/presentation/create_match_page.dart';
 import 'shared/utils/auth_mock.dart';
-import 'shared/widgets/bottom_navigation.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
       title: 'Uncotejo',
       initialRoute: '/',
       routes: {
-        '/': (context) => const BottomNavigation(),
+        '/': (context) => const HomePage(),
         '/create-match': (context) => const CreateMatchPage(),
         '/my-team': (context) => const TeamScreen(),
       },
