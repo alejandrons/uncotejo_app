@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
-import 'package:uncotejo_front/features/home/presentation/home_page.dart';
-import 'features/match/aplication/provider/match_provider.dart';
-import 'features/team_view/presentation/team_screen.dart';
+import 'features/home/presentation/home_page.dart';
+import 'features/match/aplication/match_provider.dart';
 import 'features/match/presentation/create_match_page.dart';
 import 'shared/utils/auth_mock.dart';
+import 'features/team/presentation/team_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

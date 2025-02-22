@@ -1,7 +1,7 @@
 class PossibleDates {
-  final List<String>? days; // Lista de días ["Lunes", "Martes", ...]
-  final DateTime? from; // Fecha de inicio del rango
-  final DateTime? to; // Fecha de fin del rango
+  final List<String>? days;
+  final DateTime? from; 
+  final DateTime? to; 
 
   PossibleDates.days(this.days)
       : from = null,
@@ -21,6 +21,7 @@ class PossibleDates {
 
   factory PossibleDates.fromJson(Map<String, dynamic> json) {
     if (json.containsKey('days')) {
+      
       return PossibleDates.days(List<String>.from(json['days']));
     } else if (json.containsKey('range')) {
       return PossibleDates.range(
