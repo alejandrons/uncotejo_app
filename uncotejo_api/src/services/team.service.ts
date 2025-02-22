@@ -125,6 +125,10 @@ export default class TeamService {
                 throw makeErrorResponse(404, 'Líder actual');
             }
 
+            if (newLeaderId !== teamLeaderId) {
+                throw makeErrorResponse(400, 'El usuario no puede transferirse a sí mismo.');
+            }
+
             const newLeader = await User.findByPk(newLeaderId, { transaction });
             if (!newLeader) {
                 throw makeErrorResponse(404, 'Usuario');
