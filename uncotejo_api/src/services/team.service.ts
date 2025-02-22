@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import Team from '../models/team.model';
 import { ITeam } from '../views/team';
-import { Role } from '../utils/enums';
+import { MAX_PLAYERS, Role } from '../utils/enums';
 import User from '../models/user.model';
 import { makeErrorResponse } from '../utils/errorHandler';
 import Match from '../models/match.model';
@@ -49,7 +49,9 @@ export default class TeamService {
     }
 
     static async getTeams(): Promise<ITeam[]> {
-        return await Team.findAll();
+        const teams = await Team.findAll({ include: [{ model: User, as: 'players' }] });
+        
+        return teams.filter(team => team.players.length < MAX_PLAYERS[team.teamType]);
     }
 
     static async getTeamById(teamId: number): Promise<ITeam | null> {
