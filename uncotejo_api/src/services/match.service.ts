@@ -141,9 +141,18 @@ export default class MatchService {
 
         let awayTeam = await Team.findOne({ where: { teamLeaderId: user.id } });
         const match = await Match.findByPk(matchId);
+        const homeTeam = await Team.findByPk(match!.homeTeamId);
 
         this.validateMatch(match, awayTeam);
-        console.log(match!.homeTeamId, awayTeam!.id);
+
+        if (!homeTeam) {
+            throw makeErrorResponse(404, 'El equipo local no existe');
+        }
+
+        if (homeTeam.teamType != awayTeam!.teamType){
+            throw makeErrorResponse(409, 'El tipo de equipo debe de ser el mismo');
+        }
+
         if (awayTeam!.id === match!.homeTeamId) {
             throw makeErrorResponse(409, 'El equipo visitante no puede ser el mismo que el local');
         }
