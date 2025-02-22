@@ -77,12 +77,11 @@ export default class User extends Model<IUser> {
     @BeforeCreate
     @BeforeUpdate
     static hashPassword(instance: User) {
-        if (instance.password) {
+        if (instance.changed('password')) {
             instance.password = bcrypt.hashSync(instance.password, 10);
         }
     }
 
-    // 🔹 Comparar contraseña en el login
     checkPassword(password: string): boolean {
         return bcrypt.compareSync(password, this.password);
     }
