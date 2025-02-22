@@ -28,7 +28,6 @@ export enum ShieldForm {
     Shield3 = 'shield3',
     Shield4 = 'shield4',
     Shield5 = 'shield5',
-
 }
 
 export enum ShieldInterior {

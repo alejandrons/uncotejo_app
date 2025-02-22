@@ -20,11 +20,9 @@ class _MatchFormState extends State<MatchForm> {
   List<String> selectedDays = [];
   TimeOfDay? selectedTime;
 
-  // Variables para mensajes de error
   String? dateError;
   String? timeError;
 
-  // Claves para forzar la reconstrucción de los widgets
   Key _datePickerKey = UniqueKey();
   Key _timePickerKey = UniqueKey();
 

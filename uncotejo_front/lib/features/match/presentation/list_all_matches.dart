@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../shared/widgets/bottom_navigation.dart';
 import '../../../shared/widgets/primary_button.dart';
 import '../../../shared/widgets/secondary_button.dart';
 import '../../../shared/widgets/template_cartd.dart';
@@ -42,7 +43,6 @@ class MatchListScreen extends StatelessWidget {
               },
             ),
             const SizedBox(height: 10),
-
             Expanded(
               child: ListView.builder(
                 itemCount: matches.length,
@@ -55,21 +55,22 @@ class MatchListScreen extends StatelessWidget {
                       title: "vs ${match["teamName"]}",
                       attributes: [
                         {"text": match["stars"], "icon": null},
-                        {"text": match["availability"], "icon": Icons.calendar_today},
+                        {
+                          "text": match["availability"],
+                          "icon": Icons.calendar_today
+                        },
                         {"text": match["time"], "icon": Icons.access_time},
                       ],
                       buttons: [
                         PrimaryButton(
                           label: "Pactar partido",
                           color: Colors.grey[600],
-                          onPressed: () {
-                          },
+                          onPressed: () {},
                         ),
                         SecondaryButton(
                           label: "Copiar link del Partido",
                           leftIcon: Icons.copy,
-                          onPressed: () {
-                          },
+                          onPressed: () {},
                         ),
                       ],
                     ),
@@ -80,6 +81,7 @@ class MatchListScreen extends StatelessWidget {
           ],
         ),
       ),
+      bottomNavigationBar: const BottomNavigation(),
     );
   }
 }
