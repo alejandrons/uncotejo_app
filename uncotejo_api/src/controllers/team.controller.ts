@@ -111,7 +111,7 @@ router.delete('/leave', authMiddleware, async (req: IAuthRequest, res: Response)
         await TeamService.leaveTeam(req.user!.id);
         const newToken = UserService.generateNewToken(req.user!.id);
 
-        res.json({ message: 'Has salido del equipo.',token: newToken, });
+        res.json({ message: 'Has salido del equipo.', token: newToken });
     } catch (error) {
         handleErrorResponse(res, error);
     }
@@ -125,10 +125,10 @@ router.put(
         try {
             await TeamService.transferLeadership(parseInt(req.params.playerId), req.user!.id);
             const newLeaderToken = UserService.generateNewToken(req.user!.id);
-                res.json({
-                    message: `Has transferido el liderazgo al usuario: ${req.params.playerId}`,
-                    token: newLeaderToken,
-                });
+            res.json({
+                message: `Has transferido el liderazgo al usuario: ${req.params.playerId}`,
+                token: newLeaderToken,
+            });
         } catch (error) {
             handleErrorResponse(res, error);
         }

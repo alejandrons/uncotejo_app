@@ -149,7 +149,7 @@ export default class MatchService {
             throw makeErrorResponse(404, 'El equipo local no existe');
         }
 
-        if (homeTeam.teamType != awayTeam!.teamType){
+        if (homeTeam.teamType != awayTeam!.teamType) {
             throw makeErrorResponse(409, 'El tipo de equipo debe de ser el mismo');
         }
 

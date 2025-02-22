@@ -13,7 +13,9 @@ export default class UserService {
     /**
      * ✅ Registro de usuario
      */
-    static async register(data: IUser): Promise<{ token: string; user: Pick<IUser, 'id' | 'email' | 'role'> }> {
+    static async register(
+        data: IUser,
+    ): Promise<{ token: string; user: Pick<IUser, 'id' | 'email' | 'role'> }> {
         const existingUser = await User.findOne({ where: { email: data.email } });
 
         if (existingUser) {
@@ -68,18 +70,12 @@ export default class UserService {
 
     static async getUserById(userId: number): Promise<IUser | null> {
         const user = await User.findByPk(userId);
-        if (!user) throw makeErrorResponse(404, 'Usuario no encontrado.');        
+        if (!user) throw makeErrorResponse(404, 'Usuario no encontrado.');
         return user;
     }
 
     static generateNewToken = async (userId: number) => {
         const user = await UserService.getUserById(userId);
-        return jwt.sign(
-            { id: user!.id, },
-            process.env.JWT_SECRET!,
-            { expiresIn: '24h' }
-        );
+        return jwt.sign({ id: user!.id }, process.env.JWT_SECRET!, { expiresIn: '24h' });
     };
 }
-
-
