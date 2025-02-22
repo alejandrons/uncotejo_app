@@ -124,8 +124,7 @@ export default class TeamService {
             if (!oldLeader) {
                 throw makeErrorResponse(404, 'Líder actual');
             }
-
-            if (newLeaderId !== teamLeaderId) {
+            if (newLeaderId === teamLeaderId) {
                 throw makeErrorResponse(400, 'El usuario no puede transferirse a sí mismo.');
             }
 
@@ -142,7 +141,10 @@ export default class TeamService {
                 throw makeErrorResponse(404, 'Equipo');
             }
 
-            console.log('Antes de actualizar:', { oldLeader, newLeader, team });
+            const players = await team.$get('players', { transaction });
+            if (!players.some((player) => player.id === newLeader.id)) {
+                throw makeErrorResponse(400, 'El nuevo líder debe ser un jugador del equipo.');
+            }
 
             await oldLeader.update(
                 { role: Role.Player },
@@ -156,16 +158,6 @@ export default class TeamService {
                 { teamLeaderId: newLeaderId },
                 { where: { id: team.id }, transaction },
             );
-
-            const updatedTeam = await Team.findByPk(team.id, { transaction });
-            const updatedOldLeader = await User.findByPk(oldLeader.id, { transaction });
-            const updatedNewLeader = await User.findByPk(newLeader.id, { transaction });
-
-            console.log('Después de actualizar:', {
-                updatedOldLeader,
-                updatedNewLeader,
-                updatedTeam,
-            });
 
             await transaction.commit();
         } catch (error) {
