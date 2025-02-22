@@ -50,8 +50,8 @@ export default class TeamService {
 
     static async getTeams(): Promise<ITeam[]> {
         const teams = await Team.findAll({ include: [{ model: User, as: 'players' }] });
-        
-        return teams.filter(team => team.players.length < MAX_PLAYERS[team.teamType]);
+
+        return teams.filter((team) => team.players.length < MAX_PLAYERS[team.teamType]);
     }
 
     static async getTeamById(teamId: number): Promise<ITeam | null> {
