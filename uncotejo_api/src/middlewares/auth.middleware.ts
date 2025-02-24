@@ -12,16 +12,16 @@ export function authMiddleware(req: IAuthRequest, res: Response, next: NextFunct
     const token = req.header('Authorization')?.split(' ')[1];
 
     if (!token) {
-        res.status(401).json({ error: 'Acceso denegado' });
+        res.status(401).json({ error: 'Acceso denegado. Token no proporcionado.' });
         return;
     }
 
     try {
         const decoded = jwt.verify(token, JWT_SECRET) as IAuthRequest['user'];
-        (req as IAuthRequest).user = decoded;
+        req.user = decoded;
+
         next();
     } catch (error) {
-        res.status(401).json({ error: 'Token inválido' });
-        return;
+        res.status(401).json({ error: 'Token inválido o expirado.' });
     }
 }
