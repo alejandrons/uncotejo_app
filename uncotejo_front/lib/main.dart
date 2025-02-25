@@ -11,7 +11,8 @@ void main() async {
   await dotenv.load();
 
   // Simular inicio de sesión antes de arrancar la app
-  // await AuthMock.login(dotenv.env['AUTH_EMAIL']!, dotenv.env['AUTH_PASSWORD']!);
+  await AuthMock.login(dotenv.env['AUTH_EMAIL']!, dotenv.env['AUTH_PASSWORD']!);
+
 
   runApp(
     MultiProvider(
