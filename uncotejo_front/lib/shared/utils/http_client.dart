@@ -2,7 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../utils/auth_service.dart';
-import '../exeptions/exception_advisor.dart';
+import '../exceptions/exception_advisor.dart';
 
 class HttpClient {
   static final String _defaultBaseUrl = dotenv.env['BASE_URL'] ?? "";

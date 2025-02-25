@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../shared/exeptions/exception_controller.dart';
+import '../../../shared/exceptions/exception_controller.dart';
 import '../domain/match.dart';
 import 'package:uncotejo_front/shared/utils/http_client.dart';
 

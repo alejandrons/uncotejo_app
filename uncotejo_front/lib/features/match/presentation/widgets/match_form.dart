@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../aplication/match_provider.dart';
+import '../../application/match_provider.dart';
 import '../../domain/possible_dates.dart';
 import 'package:provider/provider.dart';
 import 'date_picker.dart';

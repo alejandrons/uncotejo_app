@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../application/team_provider.dart';
 import 'widgets/team_member_list.dart';
 import 'package:uncotejo_front/shared/widgets/custom_widgets.dart';
 import 'package:uncotejo_front/shared/widgets/bottom_navigation.dart';
@@ -15,42 +17,51 @@ class _TeamScreenState extends State<TeamScreen> {
   bool isCurrentUserLeader = true;
   final String loggedInUserName = 'Armando'; // Replace with the actual logged-in user's name
 
+  @override
+  void initState() {
+    super.initState();
+    _loadTeam();
+  }
+
+  void _loadTeam() {
+    final teamProvider = Provider.of<TeamProvider>(context, listen: false);
+    teamProvider.getTeamById(context, 1); // Replace with the actual team ID
+    teamProvider.getTeamMembers(context, 1); // Replace with the actual team ID
+  }
+
   void _copyTeamLink() {
     // Handle copy team link action
   }
 
-  void _transferLeadership(String memberName) {
-    // Handle transfer leadership action
-    print('Transferring leadership to $memberName');
-  }
 
-  void _expelMember(String memberName) {
-    // Handle expel member action
-    print('Expelling member $memberName');
-  }
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> teamMembers = [
-      {
-        'name': 'Armando',
-        'isLeader': true,
-        'onLeaderTransfer': null,
-        'onExpel': null,
-      },
-      {
-        'name': 'Atulya',
-        'isLeader': false,
-        'onLeaderTransfer': () => _transferLeadership('Atulya'),
-        'onExpel': () => _expelMember('Atulya'),
-      },
-      {
-        'name': 'Voltaire',
-        'isLeader': false,
-        'onLeaderTransfer': () => _transferLeadership('Voltaire'),
-        'onExpel': () => _expelMember('Voltaire'),
-      },
-    ];
+    final teamProvider = Provider.of<TeamProvider>(context);
+    final team = teamProvider.team;
+    final teamMembers = teamProvider.teamMembers;
+
+    if (teamProvider.errorMessage != null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Mi Equipo'),
+        ),
+        body: Center(
+          child: Text(teamProvider.errorMessage!),
+        ),
+      );
+    }
+
+    if (team == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Mi Equipo'),
+        ),
+        body: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -67,20 +78,20 @@ class _TeamScreenState extends State<TeamScreen> {
               iconSize: 50,
             ),
             const CustomSizedBox(height: 10),
-            const Text(
-              'Equipo',
+            Text(
+              team.name,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const CustomSizedBox(height: 8),
-            const Text(
-              'Slogan de ejemplo',
+            Text(
+              team.slogan,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+              style: const TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
             ),
             const CustomSizedBox(height: 8),
-            const Text(
-              'Descripción',
+            Text(
+              team.description,
               textAlign: TextAlign.center,
             ),
             const CustomSizedBox(height: 8),
