@@ -11,6 +11,7 @@ void main() async {
   //await AuthMock.logout();
   await AuthMock.login(dotenv.env['AUTH_EMAIL']!, dotenv.env['AUTH_PASSWORD']!);
 
+
   runApp(
     const MyApp(),
   );

@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import Team from '../models/team.model';
 import { ITeam } from '../views/team';
-import { Role } from '../utils/enums';
+import { MAX_PLAYERS, Role } from '../utils/enums';
 import User from '../models/user.model';
 import { makeErrorResponse } from '../utils/errorHandler';
 import Match from '../models/match.model';
@@ -49,7 +49,9 @@ export default class TeamService {
     }
 
     static async getTeams(): Promise<ITeam[]> {
-        return await Team.findAll();
+        const teams = await Team.findAll({ include: [{ model: User, as: 'players' }] });
+
+        return teams.filter((team) => team.players.length < MAX_PLAYERS[team.teamType]);
     }
 
     static async getTeamById(teamId: number): Promise<ITeam | null> {
@@ -124,8 +126,7 @@ export default class TeamService {
             if (!oldLeader) {
                 throw makeErrorResponse(404, 'Líder actual');
             }
-
-            if (newLeaderId !== teamLeaderId) {
+            if (newLeaderId === teamLeaderId) {
                 throw makeErrorResponse(400, 'El usuario no puede transferirse a sí mismo.');
             }
 
@@ -142,7 +143,10 @@ export default class TeamService {
                 throw makeErrorResponse(404, 'Equipo');
             }
 
-            console.log('Antes de actualizar:', { oldLeader, newLeader, team });
+            const players = await team.$get('players', { transaction });
+            if (!players.some((player) => player.id === newLeader.id)) {
+                throw makeErrorResponse(400, 'El nuevo líder debe ser un jugador del equipo.');
+            }
 
             await oldLeader.update(
                 { role: Role.Player },
@@ -156,16 +160,6 @@ export default class TeamService {
                 { teamLeaderId: newLeaderId },
                 { where: { id: team.id }, transaction },
             );
-
-            const updatedTeam = await Team.findByPk(team.id, { transaction });
-            const updatedOldLeader = await User.findByPk(oldLeader.id, { transaction });
-            const updatedNewLeader = await User.findByPk(newLeader.id, { transaction });
-
-            console.log('Después de actualizar:', {
-                updatedOldLeader,
-                updatedNewLeader,
-                updatedTeam,
-            });
 
             await transaction.commit();
         } catch (error) {
