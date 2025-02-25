@@ -57,7 +57,7 @@ router.put(
     async (req: IAuthRequest, res: Response) => {
         try {
             const userId = parseInt(req.params.id);
-            const updatedUser = await UserService.updateUser(userId, req.body);
+            const updatedUser: IUser = await UserService.updateUser(userId, req.body);
             res.json(updatedUser);
         } catch (error) {
             handleErrorResponse(res, error);

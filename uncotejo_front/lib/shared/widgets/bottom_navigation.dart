@@ -23,11 +23,11 @@ class _BottomNavigationState extends State<BottomNavigation> {
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.sports),
-          label: 'Matches',
+          label: 'Match',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.emoji_events),
-          label: 'Events',
+          label: 'Tournament',
         ),
       ],
     );
