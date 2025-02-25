@@ -4,6 +4,7 @@ import { IAuthRequest, authMiddleware } from '../middlewares/auth.middleware';
 import { validateTeam } from '../middlewares/team.middleware';
 import { validateLeadership, validatePlayer } from '../middlewares/user.middleware';
 import { handleErrorResponse, handleValidationErrors } from '../utils/errorHandler';
+import UserService from '../services/user.service';
 
 const router = Router();
 
@@ -16,7 +17,8 @@ router.post(
     async (req: IAuthRequest, res: Response) => {
         try {
             const team = await TeamService.createTeam(req.body, req.user!.id);
-            res.status(201).json(team);
+            const newToken = UserService.generateNewToken(req.user!.id);
+            res.status(201).json({ team, token: newToken });
         } catch (error) {
             handleErrorResponse(res, error);
         }
@@ -107,7 +109,9 @@ router.delete(
 router.delete('/leave', authMiddleware, async (req: IAuthRequest, res: Response) => {
     try {
         await TeamService.leaveTeam(req.user!.id);
-        res.json({ message: 'Has salido del equipo.' });
+        const newToken = UserService.generateNewToken(req.user!.id);
+
+        res.json({ message: 'Has salido del equipo.', token: newToken });
     } catch (error) {
         handleErrorResponse(res, error);
     }
@@ -120,8 +124,10 @@ router.put(
     async (req: IAuthRequest, res: Response) => {
         try {
             await TeamService.transferLeadership(parseInt(req.params.playerId), req.user!.id);
+            const newLeaderToken = UserService.generateNewToken(req.user!.id);
             res.json({
-                message: `has transferido el liderazgo al usuario: ${req.params.playerId} `,
+                message: `Has transferido el liderazgo al usuario: ${req.params.playerId}`,
+                token: newLeaderToken,
             });
         } catch (error) {
             handleErrorResponse(res, error);
