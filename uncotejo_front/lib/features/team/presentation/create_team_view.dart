@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:uncotejo_front/shared/utils/shield_list.dart'; // Import the shield list
+import '../../../shared/widgets/bottom_navigation.dart';
+
 
 class CreateTeamScreen extends StatelessWidget {
   const CreateTeamScreen({super.key});
@@ -146,37 +148,7 @@ class CreateTeamScreen extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            IconButton(
-              icon: const Icon(Icons.home),
-              onPressed: () {
-                // Navigate to Home screen
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.people),
-              onPressed: () {
-                // Navigate to Team screen
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.sports_soccer),
-              onPressed: () {
-                // Navigate to Match screen
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.emoji_events),
-              onPressed: () {
-                // Navigate to Torneo screen
-              },
-            ),
-          ],
-        ),
-      ),
+      bottomNavigationBar: BottomNavigation(),
     );
   }
 }

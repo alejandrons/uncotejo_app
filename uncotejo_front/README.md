@@ -1,7 +1,7 @@
 # Responsabilidades:
 - Noriega:  Register | Login 
 - Tomas: Ver equipo | Editar equipo
-- Camilo: Crear equipo | Unirse a equipo  | Jugador en equipo
+- Camilo: Crear equipo melo | Unirse a equipo  | Home: lista de equipos
 - Kevin: Todo el back  | Crear partido | Unirse a partido
 
 

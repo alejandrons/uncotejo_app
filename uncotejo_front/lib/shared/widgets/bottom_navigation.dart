@@ -15,19 +15,19 @@ class _BottomNavigationState extends State<BottomNavigation> {
       items: const [
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
-          label: '',
+          label: 'Home',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.sports_soccer),
-          label: '',
+          label: 'Team',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.sports),
-          label: '',
+          label: 'Match',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.emoji_events),
-          label: '',
+          label: 'Tournament',
         ),
       ],
     );
