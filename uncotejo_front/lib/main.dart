@@ -5,7 +5,7 @@ import 'features/home/presentation/home_page.dart';
 import 'features/match/aplication/match_provider.dart';
 import 'features/match/presentation/create_match_page.dart';
 import 'shared/utils/auth_mock.dart';
-import 'features/team/presentation/team_screen.dart';
+import 'features/team_view/presentation/team_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
