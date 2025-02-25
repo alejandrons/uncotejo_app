@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../shared/widgets/top_navigation.dart';
 import 'widgets/match_form.dart';
 
 class CreateMatchPage extends StatelessWidget {
@@ -7,9 +8,8 @@ class CreateMatchPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Crear Partido"),
-
+      appBar: const CustomAppBar(
+        title: 'Crear Equipo',
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
