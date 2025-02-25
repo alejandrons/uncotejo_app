@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../aplication/provider/match_provider.dart';
+import '../../application/match_provider.dart';
 import '../../domain/possible_dates.dart';
 import 'package:provider/provider.dart';
 import 'date_picker.dart';
@@ -20,46 +20,71 @@ class _MatchFormState extends State<MatchForm> {
   List<String> selectedDays = [];
   TimeOfDay? selectedTime;
 
+  // Variables para mensajes de error
+  String? dateError;
+  String? timeError;
+
+  // Claves para forzar la reconstrucción de los widgets
+  Key _datePickerKey = UniqueKey();
+  Key _timePickerKey = UniqueKey();
+
   void _handleDateSelection(DateTime? start, DateTime? end, List<String> days) {
     setState(() {
       startDate = start;
       endDate = end;
       selectedDays = days;
+      dateError = null;
     });
   }
 
   void _handleTimeSelection(TimeOfDay? time) {
     setState(() {
       selectedTime = time;
+      timeError = null;
     });
   }
 
+  void _resetForm() {
+    setState(() {
+      startDate = null;
+      endDate = null;
+      selectedDays.clear();
+      selectedTime = null;
+      dateError = null;
+      timeError = null;
+
+      _datePickerKey = UniqueKey();
+      _timePickerKey = UniqueKey();
+    });
+
+    _formKey.currentState?.reset();
+  }
+
   Future<void> _submitForm() async {
-    if (selectedTime == null || (startDate == null && selectedDays.isEmpty)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Debe seleccionar fecha y hora")),
-      );
+    setState(() {
+      dateError = (startDate == null && selectedDays.isEmpty)
+          ? "Seleccione una fecha válida"
+          : null;
+      timeError = (selectedTime == null) ? "Seleccione una hora válida" : null;
+    });
+
+    if (dateError != null || timeError != null) {
       return;
     }
 
-    PossibleDates possibleDates;
-    if (selectedDays.isNotEmpty) {
-      possibleDates = PossibleDates.days(selectedDays);
-    } else {
-      possibleDates = PossibleDates.range(startDate!, endDate!);
-    }
+    PossibleDates possibleDates = selectedDays.isNotEmpty
+        ? PossibleDates.days(selectedDays)
+        : PossibleDates.range(startDate!, endDate!);
 
     final matchProvider = Provider.of<MatchProvider>(context, listen: false);
 
-    try {
-      await matchProvider.createMatch(possibleDates, selectedTime!);
+    await matchProvider.createMatch(context, possibleDates, selectedTime!);
+
+    if (matchProvider.errorMessage == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Partido creado exitosamente")),
       );
-    } catch (_) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Error al crear partido")),
-      );
+      _resetForm();
     }
   }
 
@@ -70,27 +95,38 @@ class _MatchFormState extends State<MatchForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DatePickerWidget(onDateSelected: _handleDateSelection),
+          DatePickerWidget(
+            key: _datePickerKey,
+            onDateSelected: _handleDateSelection,
+          ),
+          if (dateError != null)
+            Padding(
+              padding: const EdgeInsets.only(left: 8, top: 4),
+              child: Text(dateError!,
+                  style: const TextStyle(color: Colors.red, fontSize: 12)),
+            ),
           const SizedBox(height: 10),
-          TimePickerWidget(onTimeSelected: _handleTimeSelection),
+          TimePickerWidget(
+            key: _timePickerKey,
+            onTimeSelected: _handleTimeSelection,
+          ),
+          if (timeError != null)
+            Padding(
+              padding: const EdgeInsets.only(left: 8, top: 4),
+              child: Text(timeError!,
+                  style: const TextStyle(color: Colors.red, fontSize: 12)),
+            ),
           const SizedBox(height: 30),
-
           Center(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                PrimaryButton(
-                  label: "Generar Link",
-                  color: Colors.blue,
-                  leftIcon: Icons.copy,
-                  onPressed: () {},
-                ),
                 const SizedBox(width: 16),
                 PrimaryButton(
                   label: "Finalizar",
                   color: Colors.red,
                   rightIcon: Icons.check,
-                  onPressed: _submitForm, // Llama a la función para enviar los datos
+                  onPressed: _submitForm,
                 ),
               ],
             ),

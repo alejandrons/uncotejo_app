@@ -6,7 +6,7 @@ class Match {
   final PossibleDates possibleDates; 
   final TimeOfDay fixedTime; 
   final String? link; 
-  final int homeTeamId; 
+  final int? homeTeamId; 
   final int? awayTeamId; 
   final bool? homeTeamAttendance; 
   final bool? awayTeamAttendance; 
@@ -16,7 +16,7 @@ class Match {
     required this.possibleDates,
     required this.fixedTime,
     this.link, 
-    required this.homeTeamId,
+    this.homeTeamId,
     this.awayTeamId,
     this.homeTeamAttendance, 
     this.awayTeamAttendance, 
@@ -25,9 +25,7 @@ class Match {
   Map<String, dynamic> toJson() {
     return {
       'possibleDates': possibleDates.toJson(),
-      'fixedTime': "${fixedTime.hour}:${fixedTime.minute}",
-      'homeTeamId': homeTeamId,
-      'awayTeamId': awayTeamId,
+      'fixedTime': "${fixedTime.hour}:${fixedTime.minute}"
     };
   }
 
