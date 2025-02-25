@@ -13,28 +13,6 @@ class ApiException implements Exception {
   }
 }
 
-<<<<<<< HEAD
-Future<Map<String, dynamic>> processResponse(http.Response response) async {
-  try {
-    final String responseBody = response.body.trim();
-    final Map<String, dynamic>? jsonResponse =
-        responseBody.isNotEmpty ? jsonDecode(responseBody) : null;
-
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      return jsonResponse ?? {};
-    } else {
-      throw ApiException(
-        statusCode: response.statusCode,
-        message: jsonResponse?['error'] ?? 'Error inesperado en la petición',
-      );
-    }
-  } on ApiException {
-    rethrow;
-  } catch (e) {
-    throw ApiException(
-      statusCode: response.statusCode,
-      message: 'Error al procesar la respuesta del servidor',
-=======
 Future<dynamic> processResponse(http.Response response) async {
   try {
     final String responseBody = response.body.trim();
@@ -80,7 +58,6 @@ Future<dynamic> processResponse(http.Response response) async {
     throw ApiException(
       statusCode: response.statusCode,
       message: 'Error al procesar la respuesta del servidor: $e',
->>>>>>> 447546eaaea88ace69d40d53b884ec2d5db2be2d
     );
   }
 }

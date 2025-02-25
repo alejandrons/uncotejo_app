@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:uncotejo_front/shared/widgets/home_screen.dart';
 import 'shared/utils/auth_mock.dart';
-import 'features/team_view/presentation/team_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
