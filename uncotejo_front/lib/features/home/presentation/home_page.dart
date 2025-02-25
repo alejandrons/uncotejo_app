@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../shared/widgets/bottom_navigation.dart';
+import 'package:uncotejo_front/features/match/presentation/list_all_matches.dart';
 import '../../../shared/widgets/primary_button.dart';
+import '../../match/presentation/create_match_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -17,21 +18,21 @@ class HomePage extends StatelessWidget {
               label: "Crear Partido",
               color: Colors.blueAccent,
               onPressed: () {
-                Navigator.pushNamed(context, '/create-match'); // Navega a crear partido
+                MaterialPageRoute(
+                    builder: (context) => const CreateMatchPage());
               },
             ),
             const SizedBox(height: 16), // Espaciado entre botones
             PrimaryButton(
-              label: "Listar Partidos",
-              color: Colors.green, // Diferente color para distinguirlo
-              onPressed: () {
-                Navigator.pushNamed(context, '/list-matches'); // Navega a listar partidos
-              },
-            ),
+                label: "Listar Partidos",
+                color: Colors.green, // Diferente color para distinguirlo
+                onPressed: () {
+                  MaterialPageRoute(
+                      builder: (context) => const MatchListPage());
+                }),
           ],
         ),
       ),
-      bottomNavigationBar: const BottomNavigation(),
     );
   }
 }
