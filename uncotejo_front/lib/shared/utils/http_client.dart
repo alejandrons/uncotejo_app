@@ -6,11 +6,11 @@ import '../exeptions/exception_advisor.dart';
 
 class HttpClient {
   static final String _defaultBaseUrl = dotenv.env['BASE_URL'] ?? "";
-  static final String baseUrl = _defaultBaseUrl.isNotEmpty
-      ? _defaultBaseUrl
+  static final String baseUrl = _defaultBaseUrl.isNotEmpty ? _defaultBaseUrl
       : throw Exception("BASE_URL no definida en .env");
 
-  static Future<Map<String, dynamic>> get(String endpoint) async {
+  static Future<dynamic> get(String endpoint) async {
+    print('$baseUrl$endpoint');
     String? token = await AuthService.getToken();
     final response = await http.get(
       Uri.parse('$baseUrl$endpoint'),
@@ -19,10 +19,13 @@ class HttpClient {
         if (token != null) 'Authorization': 'Bearer $token',
       },
     );
-    return processResponse(response);
+    // final processedResponse = processResponse(response);
+    // return processedResponse;
+    print(response);
+    return response;
   }
 
-  static Future<Map<String, dynamic>> post(
+  static Future<dynamic> post(
       String endpoint, Map<String, dynamic> body) async {
     String? token = await AuthService.getToken();
     final response = await http.post(
@@ -36,8 +39,7 @@ class HttpClient {
     return processResponse(response);
   }
 
-  static Future<Map<String, dynamic>> put(
-      String endpoint, Map<String, dynamic> body) async {
+  static Future<dynamic> put(String endpoint, Map<String, dynamic> body) async {
     String? token = await AuthService.getToken();
     final response = await http.put(
       Uri.parse('$baseUrl$endpoint'),

@@ -13,10 +13,10 @@ class Team {
 
   factory Team.fromJson(Map<String, dynamic> json) {
     return Team(
-      id: json['id'],
-      name: json['name'],
-      slogan: json['slogan'],
-      shieldForm: json['shieldForm'],
+      id: json['id'] ?? 0,
+      name: json['name'] ?? 'Desconocido',
+      slogan: json['slogan'] ?? 'Sin slogan',
+      shieldForm: json['shieldForm'] ?? 'default.png',
     );
   }
 }
