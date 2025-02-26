@@ -11,8 +11,8 @@ class Match {
   final int? awayTeamId;
   final bool? homeTeamAttendance;
   final bool? awayTeamAttendance;
-  final Team? homeTeam; 
-  final Team? awayTeam;
+  final ParsedTeam? homeTeam; 
+  final ParsedTeam? awayTeam;
 
   Match({
     this.id,
@@ -62,8 +62,8 @@ class Match {
       awayTeamId: json['awayTeamId'],
       homeTeamAttendance: json['homeTeamAttendance'] ?? false,
       awayTeamAttendance: json['awayTeamAttendance'] ?? false,
-      homeTeam: json['homeTeam'] != null ? Team.fromJson(json['homeTeam']) : null,
-      awayTeam: json['awayTeam'] != null ? Team.fromJson(json['awayTeam']) : null,
+      homeTeam: json['homeTeam'] != null ? ParsedTeam.fromJson(json['homeTeam']) : null,
+      awayTeam: json['awayTeam'] != null ? ParsedTeam.fromJson(json['awayTeam']) : null,
     );
   }
 }

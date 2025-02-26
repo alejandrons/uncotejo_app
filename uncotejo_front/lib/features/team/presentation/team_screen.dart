@@ -34,7 +34,7 @@ class _TeamScreenState extends State<TeamScreen> {
   Future<void> _loadTeam() async {
     try {
       final fetchedTeam = await TeamRepository.getTeamById(
-          3); 
+          2); 
       setState(() {
         team = fetchedTeam;
       });

@@ -1,12 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:uncotejo_front/features/team/presentation/create_team_view.dart';
-import 'package:uncotejo_front/features/team/domain/team_model.dart';
+import 'package:uncotejo_front/features/home/presentation/widgets/create_team_screen.dart';
+import 'package:uncotejo_front/features/match/domain/parsed_team.dart';
 import 'package:uncotejo_front/features/home/presentation/widgets/team_card.dart';
+import 'package:uncotejo_front/features/team/services/team_repository.dart';
 import 'package:uncotejo_front/features/team/services/team_services.dart';
 
-// class SearchTeamScreen extends StatelessWidget {
-//   const SearchTeamScreen({super.key});
+class SearchTeamScreen extends StatefulWidget {
+  const SearchTeamScreen({super.key});
+
+  @override
+  _SearchTeamState createState() => _SearchTeamState();
+}
+
+class _SearchTeamState extends State<SearchTeamScreen> {
+  late Future<List<ParsedTeam>> _teamsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _teamsFuture = TeamRepository.getTeams();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,8 +56,8 @@ import 'package:uncotejo_front/features/team/services/team_services.dart';
           ),
         ],
       ),
-      body: FutureBuilder<List<Team>>(
-        future: TeamServices.getTeams(), // Obtiene los equipos del backend
+      body: FutureBuilder<List<ParsedTeam>>(
+        future: _teamsFuture, // Obtiene los equipos del backend
         builder: (context, snapshot) {
           // Center(child: Text(context));
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -64,9 +78,8 @@ import 'package:uncotejo_front/features/team/services/team_services.dart';
                 final team = teams[index];
                 return TeamCard(
                   teamName: team.name,
-                  slogan: team.slogan,
                   shieldForm: team.shieldForm,
-                  onJoinPressed: () => _joinTeam(team),
+                  onJoinPressed: () => {},
                 );
               },
             );
@@ -75,15 +88,4 @@ import 'package:uncotejo_front/features/team/services/team_services.dart';
       ),
     );
   }
-
-  void _joinTeam(Team team) {
-    // Lógica para unirse a un equipo
-    print('Unirse a equipo: ${team.name}');
-  }
-}
-
-void main() {
-  runApp(const MaterialApp(
-    home: SearchTeamScreen(),
-    ));
 }
