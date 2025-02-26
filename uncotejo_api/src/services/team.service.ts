@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import Team from '../models/team.model';
 import { ITeam } from '../views/team';
-import { MAX_PLAYERS, Role } from '../utils/enums';
+import { Role } from '../utils/enums';
 import User from '../models/user.model';
 import { makeErrorResponse } from '../utils/errorHandler';
 import Match from '../models/match.model';
@@ -49,9 +49,7 @@ export default class TeamService {
     }
 
     static async getTeams(): Promise<ITeam[]> {
-        const teams = await Team.findAll({ include: [{ model: User, as: 'players' }] });
-
-        return teams.filter((team) => team.players.length < MAX_PLAYERS[team.teamType]);
+        return await Team.findAll();
     }
 
     static async getTeamById(teamId: number): Promise<ITeam | null> {
@@ -126,7 +124,8 @@ export default class TeamService {
             if (!oldLeader) {
                 throw makeErrorResponse(404, 'Líder actual');
             }
-            if (newLeaderId === teamLeaderId) {
+
+            if (newLeaderId !== teamLeaderId) {
                 throw makeErrorResponse(400, 'El usuario no puede transferirse a sí mismo.');
             }
 
@@ -143,10 +142,7 @@ export default class TeamService {
                 throw makeErrorResponse(404, 'Equipo');
             }
 
-            const players = await team.$get('players', { transaction });
-            if (!players.some((player) => player.id === newLeader.id)) {
-                throw makeErrorResponse(400, 'El nuevo líder debe ser un jugador del equipo.');
-            }
+            console.log('Antes de actualizar:', { oldLeader, newLeader, team });
 
             await oldLeader.update(
                 { role: Role.Player },
@@ -160,6 +156,16 @@ export default class TeamService {
                 { teamLeaderId: newLeaderId },
                 { where: { id: team.id }, transaction },
             );
+
+            const updatedTeam = await Team.findByPk(team.id, { transaction });
+            const updatedOldLeader = await User.findByPk(oldLeader.id, { transaction });
+            const updatedNewLeader = await User.findByPk(newLeader.id, { transaction });
+
+            console.log('Después de actualizar:', {
+                updatedOldLeader,
+                updatedNewLeader,
+                updatedTeam,
+            });
 
             await transaction.commit();
         } catch (error) {
@@ -221,7 +227,7 @@ export default class TeamService {
         if (!team) throw makeErrorResponse(404, 'Equipo');
 
         const playerCount = await team.$count('players');
-        if (playerCount <= 1) {
+        if (playerCount === 0) {
             const ongoingMatches = await TeamService.findMatchesByTeam(team.id);
             if (ongoingMatches.length > 0) {
                 throw makeErrorResponse(

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import '../../aplication/match_provider.dart';
 import '../../domain/possible_dates.dart';
-import '../../services/match_repository.dart';
+import 'package:provider/provider.dart';
 import 'date_picker.dart';
 import 'time_picker.dart';
-import '../../domain/match.dart';
-
 import '../../../../shared/widgets/primary_button.dart';
 
 class MatchForm extends StatefulWidget {
@@ -21,9 +20,11 @@ class _MatchFormState extends State<MatchForm> {
   List<String> selectedDays = [];
   TimeOfDay? selectedTime;
 
+  // Variables para mensajes de error
   String? dateError;
   String? timeError;
 
+  // Claves para forzar la reconstrucción de los widgets
   Key _datePickerKey = UniqueKey();
   Key _timePickerKey = UniqueKey();
 
@@ -75,21 +76,15 @@ class _MatchFormState extends State<MatchForm> {
         ? PossibleDates.days(selectedDays)
         : PossibleDates.range(startDate!, endDate!);
 
-    final match = Match(
-      possibleDates: possibleDates,
-      fixedTime: selectedTime!,
-    );
+    final matchProvider = Provider.of<MatchProvider>(context, listen: false);
 
-    try {
-      await MatchRepository.createMatch(match, context: context);
+    await matchProvider.createMatch(context, possibleDates, selectedTime!);
+
+    if (matchProvider.errorMessage == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Partido creado exitosamente")),
       );
       _resetForm();
-    } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error al crear partido: $error")),
-      );
     }
   }
 

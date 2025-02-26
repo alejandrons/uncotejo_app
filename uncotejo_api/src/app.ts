@@ -1,7 +1,7 @@
 import express, { Application } from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
-import routes from './routes';
+import routes from '.';
 
 const app: Application = express();
 
