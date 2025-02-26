@@ -6,6 +6,7 @@ class TeamMemberCard extends StatelessWidget {
   final bool isLeader;
   final bool isCurrentUserLeader;
   final String loggedInUserName;
+  final String? position; // Allow position to be null
   final VoidCallback? onLeaderTransfer;
   final VoidCallback? onExpel;
   final bool isExpanded;
@@ -17,6 +18,7 @@ class TeamMemberCard extends StatelessWidget {
     this.isLeader = false,
     required this.isCurrentUserLeader,
     required this.loggedInUserName,
+    this.position, // Allow position to be null
     this.onLeaderTransfer,
     this.onExpel,
     required this.isExpanded,
@@ -28,7 +30,9 @@ class TeamMemberCard extends StatelessWidget {
     final bool isLoggedInUser = name == loggedInUserName;
 
     return Card(
-      color: isLoggedInUser ? Colors.blue[50] : null, // Highlight the card if it belongs to the logged-in user
+      color: isLoggedInUser
+          ? Colors.blue[50]
+          : null, // Highlight the card if it belongs to the logged-in user
       child: Column(
         children: [
           ListTile(
@@ -36,9 +40,18 @@ class TeamMemberCard extends StatelessWidget {
               child: const Icon(Icons.person),
             ),
             title: Text(name),
-            subtitle: isLeader ? const Text('Líder de equipo') : null,
+            subtitle: isLeader
+                ? (position != null && position!.isNotEmpty
+                  ? Text('Líder de equipo - $position')
+                  : Text('Líder de equipo'))
+                : (position != null && position!.isNotEmpty
+                    ? Text(position!)
+                    : const Text(
+                        'Jugador')), // Show position if not leader and position is not empty, otherwise show 'Jugador'
             trailing: isCurrentUserLeader && !isLeader
-                ? (isExpanded ? Icon(Icons.expand_less) : Icon(Icons.expand_more))
+                ? (isExpanded
+                    ? Icon(Icons.expand_less)
+                    : Icon(Icons.expand_more))
                 : null,
             onTap: isCurrentUserLeader && !isLeader ? onToggleExpand : null,
           ),

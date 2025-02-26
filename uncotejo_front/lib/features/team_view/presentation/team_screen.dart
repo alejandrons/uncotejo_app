@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import '../domain/team_mock.dart';
+import '../services/team_repository.dart';
 import 'widgets/team_member_list.dart';
 import 'package:uncotejo_front/shared/widgets/custom_widgets.dart';
 import 'package:uncotejo_front/shared/widgets/primary_button.dart';
+import 'package:uncotejo_front/shared/widgets/top_navigation.dart';
+import 'package:flutter/services.dart';
 
 class TeamScreen extends StatefulWidget {
   const TeamScreen({super.key});
@@ -12,74 +16,142 @@ class TeamScreen extends StatefulWidget {
 
 class _TeamScreenState extends State<TeamScreen> {
   bool isCurrentUserLeader = true;
-  final String loggedInUserName = 'Armando'; // Replace with the actual logged-in user's name
+  final String loggedInUserName =
+      'Juan'; // Replace with the actual logged-in user's name
+  Team? team;
+  String? errorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTeam();
+  }
+
+  Future<void> _loadTeam() async {
+    try {
+      final fetchedTeam = await TeamRepository.getTeamById(
+          1); // Replace with the actual team ID
+      setState(() {
+        team = fetchedTeam;
+      });
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('No se pudo cargar el equipo: $error')),
+      );
+    }
+  }
+
+  Future<void> _expelMember(int memberId) async {
+    try {
+      await TeamRepository.removePlayer(memberId);
+      setState(() {
+        team!.players.removeWhere((player) => player.id == memberId);
+      });
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('No se pudo expulsar al miembro: $error')),
+      );
+    }
+  }
+
+  Future<void> _transferLeadership(int memberId) async {
+    try {
+      await TeamRepository.transferLeadership(memberId);
+      setState(() {
+        isCurrentUserLeader = false;
+      });
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(
+                "No se pudo transferir el liderazgo al jugador: ${team!.players.firstWhere((player) => player.id == memberId).firstName} ${team!.players.firstWhere((player) => player.id == memberId).lastName}  $error")),
+      );
+    }
+  }
 
   void _copyTeamLink() {
-    // Handle copy team link action
+    final teamLink = team?.linkAccess;
+    if (teamLink != null) {
+      Clipboard.setData(ClipboardData(text: teamLink));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Link del equipo copiado al portapapeles')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('No se pudo copiar el link del equipo')),
+      );
+    }
   }
 
-  void _transferLeadership(String memberName) {
-    // Handle transfer leadership action
-    print('Transferring leadership to $memberName');
-  }
-
-  void _expelMember(String memberName) {
-    // Handle expel member action
-    print('Expelling member $memberName');
+  Future<void> _leaveTeam() async {
+    try {
+      await TeamRepository.leaveTeam(team!.id);
+      Navigator.of(context).pop();
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('No se pudo abandonar el equipo: $error')),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> teamMembers = [
-      {
-        'name': 'Armando',
-        'isLeader': true,
-        'onLeaderTransfer': null,
-        'onExpel': null,
-      },
-      {
-        'name': 'Atulya',
-        'isLeader': false,
-        'onLeaderTransfer': () => _transferLeadership('Atulya'),
-        'onExpel': () => _expelMember('Atulya'),
-      },
-      {
-        'name': 'Voltaire',
-        'isLeader': false,
-        'onLeaderTransfer': () => _transferLeadership('Voltaire'),
-        'onExpel': () => _expelMember('Voltaire'),
-      },
-    ];
+    if (errorMessage != null) {
+      return Scaffold(
+        appBar: CustomAppBar(
+          title: 'Mi Equipo',
+        ),
+        body: Center(
+          child: Text(errorMessage!),
+        ),
+      );
+    }
+
+    if (team == null) {
+      return Scaffold(
+        appBar: CustomAppBar(
+          title: 'Mi Equipo',
+        ),
+        body: const Center(
+          child: Text('Parece que no estas inscrito en ningún equipo'),
+        ),
+      );
+    }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Mi Equipo'),
+      appBar: CustomAppBar(
+        title: 'Mi Equipo',
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const CustomCircleAvatar(
-              radius: 50,
-              icon: Icons.person,
-              iconSize: 50,
+            Image.asset(
+              'assets/shields/${team!.shieldForm}',
+              width: 100,
+              height: 100,
             ),
             const CustomSizedBox(height: 10),
-            const Text(
-              'Equipo',
+            Text(
+              team!.teamName,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const CustomSizedBox(height: 8),
-            const Text(
-              'Slogan de ejemplo',
+            Text(
+              '"${team!.slogan}"',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+              style: const TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
             ),
             const CustomSizedBox(height: 8),
-            const Text(
-              'Descripción',
+            Text(
+              team!.description,
+              textAlign: TextAlign.center,
+            ),
+            const CustomSizedBox(height: 8),
+            Text(
+              team!.teamType,
               textAlign: TextAlign.center,
             ),
             const CustomSizedBox(height: 8),
@@ -90,17 +162,17 @@ class _TeamScreenState extends State<TeamScreen> {
             ),
             const CustomSizedBox(height: 8),
             PrimaryButton(
-              onPressed: () {
-                // Handle leave team action
-              },
+              onPressed: _leaveTeam,
               label: 'Abandonar equipo',
             ),
             const CustomSizedBox(height: 20),
             Expanded(
               child: TeamMemberList(
                 isCurrentUserLeader: isCurrentUserLeader,
-                teamMembers: teamMembers,
+                teamMembers: team!.players,
                 loggedInUserName: loggedInUserName,
+                onExpelMember: _expelMember,
+                onTransferLeadership: _transferLeadership,
               ),
             ),
           ],
