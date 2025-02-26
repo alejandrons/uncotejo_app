@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-import '../../../shared/exceptions/exception_controller.dart';
 import '../domain/team.dart';
-import '../domain/user_mock.dart';
 import 'package:uncotejo_front/shared/utils/http_client.dart';
 
 class TeamRepository {

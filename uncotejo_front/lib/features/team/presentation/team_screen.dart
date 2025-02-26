@@ -61,9 +61,11 @@ class _TeamScreenState extends State<TeamScreen> {
         isCurrentUserLeader = false;
       });
     } catch (error) {
-      setState(() {
-        errorMessage = error.toString();
-      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(
+                "No se pudo transferir el liderazgo al jugador: ${team!.players!.firstWhere((player) => player.id == memberId).firstName} ${team!.players!.firstWhere((player) => player.id == memberId).lastName}  $error")),
+      );
     }
   }
 
