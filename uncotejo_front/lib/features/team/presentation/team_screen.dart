@@ -119,7 +119,7 @@ class _TeamScreenState extends State<TeamScreen> {
           title: 'Mi Equipo',
         ),
         body: const Center(
-          child: CircularProgressIndicator(),
+          child: Text('Parece que no estas inscrito en ningún equipo'),
         ),
       );
     }
