@@ -3,7 +3,7 @@ class User {
   final String firstName;
   final String lastName;
   final String role;
-  final String? position; 
+  final String? position; // Allow position to be null
   final int teamId;
 
   User({
@@ -11,7 +11,7 @@ class User {
     required this.firstName,
     required this.lastName,
     required this.role,
-    this.position, 
+    this.position, // Allow position to be null
     required this.teamId,
   });
 
@@ -21,7 +21,7 @@ class User {
       firstName: json['firstName'],
       lastName: json['lastName'],
       role: json['role'],
-      position: json['position'],
+      position: json['position'], // Allow position to be null
       teamId: json['teamId'],
     );
   }

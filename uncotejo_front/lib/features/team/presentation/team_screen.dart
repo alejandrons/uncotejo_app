@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uncotejo_front/features/home/presentation/home_page.dart';
 import '../domain/team.dart';
 import '../services/team_repository.dart';
 import 'widgets/team_member_list.dart';
@@ -20,8 +18,7 @@ class TeamScreen extends StatefulWidget {
 
 class _TeamScreenState extends State<TeamScreen> {
   bool isCurrentUserLeader = true;
-  final String loggedInUserName =
-      'Juan'; // Replace with the actual logged-in user's name
+  final String loggedInUserName = 'Juan'; // Replace with the actual logged-in user's name
   Team? team;
   String? errorMessage;
 
@@ -33,8 +30,7 @@ class _TeamScreenState extends State<TeamScreen> {
 
   Future<void> _loadTeam() async {
     try {
-      final fetchedTeam = await TeamRepository.getTeamById(
-          3); 
+      final fetchedTeam = await TeamRepository.getTeamById(1); // Replace with the actual team ID
       setState(() {
         team = fetchedTeam;
       });
@@ -65,11 +61,9 @@ class _TeamScreenState extends State<TeamScreen> {
         isCurrentUserLeader = false;
       });
     } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text(
-                "No se pudo transferir el liderazgo al jugador: ${team!.players!.firstWhere((player) => player.id == memberId).firstName} ${team!.players!.firstWhere((player) => player.id == memberId).lastName}  $error")),
-      );
+      setState(() {
+        errorMessage = error.toString();
+      });
     }
   }
 
@@ -93,12 +87,15 @@ class _TeamScreenState extends State<TeamScreen> {
     
     widget.onLeaveTeam();
 
-
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('No se pudo abandonar el equipo: $error')),
       );
     }
+  }
+
+  void _refreshTeam() {
+    _loadTeam();
   }
 
   @override
@@ -120,7 +117,7 @@ class _TeamScreenState extends State<TeamScreen> {
           title: 'Mi Equipo',
         ),
         body: const Center(
-          child: Text('Parece que no estas inscrito en ningún equipo'),
+          child: CircularProgressIndicator(),
         ),
       );
     }
@@ -180,6 +177,7 @@ class _TeamScreenState extends State<TeamScreen> {
                 loggedInUserName: loggedInUserName,
                 onExpelMember: _expelMember,
                 onTransferLeadership: _transferLeadership,
+                onRefreshTeam: _refreshTeam, // Pass the refresh callback
               ),
             ),
           ],

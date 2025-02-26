@@ -1,4 +1,7 @@
+import 'package:flutter/material.dart';
+import '../../../shared/exceptions/exception_controller.dart';
 import '../domain/team.dart';
+import '../domain/user_mock.dart';
 import 'package:uncotejo_front/shared/utils/http_client.dart';
 
 class TeamRepository {
@@ -19,5 +22,9 @@ class TeamRepository {
 
   static Future<void> leaveTeam(int teamId) async {
     await HttpClient.delete("$_teamEndpoint/leave");
+  }
+
+  static Future<void> joinTeam(String linkAccess) async {
+    await HttpClient.put("$_teamEndpoint/join/$linkAccess", {});
   }
 }
