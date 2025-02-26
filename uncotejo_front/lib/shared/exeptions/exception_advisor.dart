@@ -13,43 +13,26 @@ class ApiException implements Exception {
   }
 }
 
-Future<dynamic> processResponse(http.Response response) async {
+Future<Map<String, dynamic>> processResponse(http.Response response) async {
   try {
     final String responseBody = response.body.trim();
-    
-    // Verificar si el cuerpo de la respuesta está vacío
-    if (responseBody.isEmpty) {
-      if (response.statusCode >= 200 && response.statusCode < 300) {
-        return {}; // Devolver un mapa vacío si la respuesta fue exitosa pero sin contenido
-      } else {
-        throw ApiException(
-          statusCode: response.statusCode,
-          message: 'Respuesta vacía con código de error ${response.statusCode}',
-        );
-      }
-    }
-
-    final dynamic jsonResponse = jsonDecode(responseBody);
+    final Map<String, dynamic>? jsonResponse =
+        responseBody.isNotEmpty ? jsonDecode(responseBody) : null;
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      return jsonResponse; // Puede ser una lista o un objeto
+      return jsonResponse ?? {};
     } else {
       throw ApiException(
         statusCode: response.statusCode,
-        message: (jsonResponse is Map<String, dynamic> && jsonResponse.containsKey('error'))
-            ? jsonResponse['error']
-            : 'Error inesperado en la petición',
+        message: jsonResponse?['error'] ?? 'Error inesperado en la petición',
       );
     }
-  } on FormatException {
-    throw ApiException(
-      statusCode: response.statusCode,
-      message: 'La respuesta del servidor no es un JSON válido',
-    );
+  } on ApiException {
+    rethrow;
   } catch (e) {
     throw ApiException(
       statusCode: response.statusCode,
-      message: 'Error al procesar la respuesta del servidor: $e',
+      message: 'Error al procesar la respuesta del servidor',
     );
   }
 }

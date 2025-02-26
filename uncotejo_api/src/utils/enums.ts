@@ -18,25 +18,16 @@ export enum Role {
 }
 
 export enum ShieldForm {
-    AlianzaPetrolera = 'Alianza-Petrolera.png',
-    America = 'America-de-Cali.png',
-    AtleticoNacional = 'atletico-nacional.png',
-    BoyacaChico = 'Boyaca-Chico.png',
-    Bucaramanga = 'Bucaramanga.png',
-    DeportivoCali = 'Deportivo-Cali.png',
-    Envigado = 'Envigado.png',
-    Huila = 'Huila.png',
-    Junior = 'Junior.png',
-    Medellin = 'Medellin.png',
-    Millonarios = 'Millonarios.png',
-    OnceCaldas = 'Once-Caldas.png',
-    Pasto = 'Pasto.png',
-    Pereira = 'Pereira.png',
-    Quindío = 'Quindío.png',
-    Rionegroaguilas = 'Rionegro-aguilas.png',
-    SantaFe = 'Santa-Fe.png',
-    Tolima = 'Tolima.png',
-    UnionMagdalena = 'Union-Magdalena.png',
+    Maedellin = 'medellin.png',
+    Nacional = 'nacional.png',
+    Triangle = 'triangle',
+    Star = 'star',
+    Hexagon = 'hexagon',
+    Shield1 = 'shield1',
+    Shield2 = 'shield2',
+    Shield3 = 'shield3',
+    Shield4 = 'shield4',
+    Shield5 = 'shield5',
 }
 
 export enum ShieldInterior {

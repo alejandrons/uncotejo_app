@@ -31,13 +31,13 @@ class PrimaryButton extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (leftIcon != null) ...[
-            Icon(leftIcon, size: 20, color: Colors.white),
+            Icon(leftIcon, size: 20),
             const SizedBox(width: 8),
           ],
           Text(label, style: const TextStyle(fontSize: 16, color: Colors.white)),
           if (rightIcon != null) ...[
             const SizedBox(width: 8),
-            Icon(rightIcon, size: 20, color: Colors.white),
+            Icon(rightIcon, size: 20),
           ],
         ],
       ),

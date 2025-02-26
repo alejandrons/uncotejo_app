@@ -44,7 +44,7 @@ export default class Team extends Model<ITeam> {
 
     @Column({
         type: DataType.STRING,
-        allowNull: true,
+        allowNull: false,
     })
     colorPrimary!: string;
 
