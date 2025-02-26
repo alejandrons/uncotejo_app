@@ -221,7 +221,7 @@ export default class TeamService {
         if (!team) throw makeErrorResponse(404, 'Equipo');
 
         const playerCount = await team.$count('players');
-        if (playerCount === 0) {
+        if (playerCount <= 1) {
             const ongoingMatches = await TeamService.findMatchesByTeam(team.id);
             if (ongoingMatches.length > 0) {
                 throw makeErrorResponse(

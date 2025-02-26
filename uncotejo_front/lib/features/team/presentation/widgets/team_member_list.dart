@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'team_member_card.dart';
 import 'package:uncotejo_front/shared/widgets/custom_widgets.dart';
-import '/features/team_view/domain/user_mock.dart';
+import '../../domain/user_mock.dart';
 
 class TeamMemberList extends StatefulWidget {
   final bool isCurrentUserLeader;
@@ -49,7 +49,7 @@ class _TeamMemberListState extends State<TeamMemberList> {
               isLeader: member.role == 'team_leader',
               isCurrentUserLeader: widget.isCurrentUserLeader,
               loggedInUserName: widget.loggedInUserName,
-              position: member.position, // Pass the position property
+              position: member.position, 
               onLeaderTransfer: () => widget.onTransferLeadership(member.id),
               onExpel: () => widget.onExpelMember(member.id),
               isExpanded: expandedMemberName == member.firstName,

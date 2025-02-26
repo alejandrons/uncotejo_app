@@ -108,10 +108,17 @@ class _MatchListPageState extends State<MatchListPage> {
                       final String homeTeamName =
                           match.homeTeam?.name ?? "Equipo desconocido";
 
+                      final String? shieldImageName =
+                          match.homeTeam?.shieldForm;
+                      final String? shieldImageUrl = shieldImageName != null
+                          ? 'assets/shields/$shieldImageName'
+                          : null;
+
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 12.0),
                         child: TemplateCard(
                           title: "vs $homeTeamName",
+                          imageUrl: shieldImageUrl,
                           attributes: [
                             {
                               "text": match.possibleDates.days?.join(", ") ??

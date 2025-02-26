@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'possible_dates.dart';
-import 'team_mock.dart';
+import 'parsed_team.dart';
 
 class Match {
   final int? id;
