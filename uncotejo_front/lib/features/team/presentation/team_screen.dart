@@ -18,7 +18,7 @@ class TeamScreen extends StatefulWidget {
 
 class _TeamScreenState extends State<TeamScreen> {
   bool isCurrentUserLeader = true;
-  final String loggedInUserName = 'Juan'; // Replace with the actual logged-in user's name
+  final String loggedInUserName = 'Juan';
   Team? team;
   String? errorMessage;
 
@@ -30,7 +30,7 @@ class _TeamScreenState extends State<TeamScreen> {
 
   Future<void> _loadTeam() async {
     try {
-      final fetchedTeam = await TeamRepository.getTeamById(1); // Replace with the actual team ID
+      final fetchedTeam = await TeamRepository.getTeamById(1); 
       setState(() {
         team = fetchedTeam;
       });
@@ -179,7 +179,7 @@ class _TeamScreenState extends State<TeamScreen> {
                 loggedInUserName: loggedInUserName,
                 onExpelMember: _expelMember,
                 onTransferLeadership: _transferLeadership,
-                onRefreshTeam: _refreshTeam, // Pass the refresh callback
+                onRefreshTeam: _refreshTeam,
               ),
             ),
           ],

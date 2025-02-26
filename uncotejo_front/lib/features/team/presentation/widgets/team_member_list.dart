@@ -9,7 +9,7 @@ class TeamMemberList extends StatefulWidget {
   final String loggedInUserName;
   final Function(int) onExpelMember;
   final Function(int) onTransferLeadership;
-  final VoidCallback onRefreshTeam; // Add the refresh callback
+  final VoidCallback onRefreshTeam;
 
   const TeamMemberList({
     super.key,
@@ -18,7 +18,7 @@ class TeamMemberList extends StatefulWidget {
     required this.loggedInUserName,
     required this.onExpelMember,
     required this.onTransferLeadership,
-    required this.onRefreshTeam, // Add the refresh callback
+    required this.onRefreshTeam,
   });
 
   @override
