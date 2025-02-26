@@ -9,7 +9,7 @@ import '../../../shared/widgets/top_navigation.dart';
 import '../services/match_repository.dart';
 
 class MatchListPage extends StatefulWidget {
-  const MatchListPage({Key? key}) : super(key: key);
+  const MatchListPage({super.key});
 
   @override
   _MatchListPageState createState() => _MatchListPageState();

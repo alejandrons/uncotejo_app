@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:uncotejo_front/features/home/presentation/home_page.dart';
+import 'package:uncotejo_front/features/team_view/presentation/team_screen.dart';
 
 import '../../features/match/presentation/list_all_matches.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -16,8 +17,7 @@ class _HomeScreenState extends State<HomeScreen> {
   //TODO: Implementar las pantallas de Home y Soccer
   final List<Widget> _screens = [
     const HomePage(), // Pantalla de Home
-    const Center(
-        child: Text("Equipo")), // Pantalla de Soccer (o futura implementación)
+    const TeamScreen(), // Pantalla de Soccer (o futura implementación)
     const MatchListPage(),
     const Center(
       child: Column(

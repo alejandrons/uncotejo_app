@@ -7,12 +7,12 @@ class TemplateCard extends StatelessWidget {
   final List<Widget> buttons;
 
   const TemplateCard({
-    Key? key,
+    super.key,
     required this.title,
     this.imageUrl, // Parámetro opcional para la imagen
     required this.attributes,
     required this.buttons,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +77,7 @@ class TemplateCard extends StatelessWidget {
                     ],
                   ),
                 );
-              }).toList(),
+              }),
 
               const SizedBox(height: 10),
 
