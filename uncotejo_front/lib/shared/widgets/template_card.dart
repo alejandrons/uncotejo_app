@@ -32,7 +32,7 @@ class TemplateCard extends StatelessWidget {
               // Imagen del escudo centrada
               ClipOval(
                 child: imageUrl != null
-                    ? Image.network(
+                    ? Image.asset(
                         imageUrl!,
                         width: 60,
                         height: 60,

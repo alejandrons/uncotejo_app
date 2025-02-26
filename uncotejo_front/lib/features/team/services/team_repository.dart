@@ -1,4 +1,4 @@
-import '../domain/team_mock.dart';
+import '../domain/team.dart';
 import 'package:uncotejo_front/shared/utils/http_client.dart';
 
 class TeamRepository {

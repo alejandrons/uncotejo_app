@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import '../domain/team_mock.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uncotejo_front/features/home/presentation/home_page.dart';
+import '../domain/team.dart';
 import '../services/team_repository.dart';
 import 'widgets/team_member_list.dart';
 import 'package:uncotejo_front/shared/widgets/custom_widgets.dart';
@@ -8,7 +10,9 @@ import 'package:uncotejo_front/shared/widgets/top_navigation.dart';
 import 'package:flutter/services.dart';
 
 class TeamScreen extends StatefulWidget {
-  const TeamScreen({super.key});
+  final VoidCallback onLeaveTeam;
+
+  const TeamScreen({super.key, required this.onLeaveTeam});
 
   @override
   _TeamScreenState createState() => _TeamScreenState();
@@ -30,13 +34,13 @@ class _TeamScreenState extends State<TeamScreen> {
   Future<void> _loadTeam() async {
     try {
       final fetchedTeam = await TeamRepository.getTeamById(
-          1); // Replace with the actual team ID
+          3); 
       setState(() {
         team = fetchedTeam;
       });
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('No se pudo cargar el equipo: $error')),
+        SnackBar(content: Text('No se pudo cargar el equipo: $error')),
       );
     }
   }
@@ -45,7 +49,7 @@ class _TeamScreenState extends State<TeamScreen> {
     try {
       await TeamRepository.removePlayer(memberId);
       setState(() {
-        team!.players.removeWhere((player) => player.id == memberId);
+        team?.players!.removeWhere((player) => player.id == memberId);
       });
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -64,7 +68,7 @@ class _TeamScreenState extends State<TeamScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content: Text(
-                "No se pudo transferir el liderazgo al jugador: ${team!.players.firstWhere((player) => player.id == memberId).firstName} ${team!.players.firstWhere((player) => player.id == memberId).lastName}  $error")),
+                "No se pudo transferir el liderazgo al jugador: ${team!.players!.firstWhere((player) => player.id == memberId).firstName} ${team!.players!.firstWhere((player) => player.id == memberId).lastName}  $error")),
       );
     }
   }
@@ -86,7 +90,10 @@ class _TeamScreenState extends State<TeamScreen> {
   Future<void> _leaveTeam() async {
     try {
       await TeamRepository.leaveTeam(team!.id);
-      Navigator.of(context).pop();
+    
+    widget.onLeaveTeam();
+
+
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('No se pudo abandonar el equipo: $error')),
@@ -134,7 +141,7 @@ class _TeamScreenState extends State<TeamScreen> {
             ),
             const CustomSizedBox(height: 10),
             Text(
-              team!.teamName,
+              team!.name,
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
@@ -169,7 +176,7 @@ class _TeamScreenState extends State<TeamScreen> {
             Expanded(
               child: TeamMemberList(
                 isCurrentUserLeader: isCurrentUserLeader,
-                teamMembers: team!.players,
+                teamMembers: team!.players!,
                 loggedInUserName: loggedInUserName,
                 onExpelMember: _expelMember,
                 onTransferLeadership: _transferLeadership,
