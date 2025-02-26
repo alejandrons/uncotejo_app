@@ -5,8 +5,8 @@ import 'package:uncotejo_front/features/team/domain/team_model.dart';
 import 'package:uncotejo_front/features/home/presentation/widgets/team_card.dart';
 import 'package:uncotejo_front/features/team/services/team_services.dart';
 
-class SearchTeamScreen extends StatelessWidget {
-  const SearchTeamScreen({super.key});
+// class SearchTeamScreen extends StatelessWidget {
+//   const SearchTeamScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

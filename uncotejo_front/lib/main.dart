@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:provider/provider.dart';
-import 'features/home/presentation/home_page.dart';
-import 'features/match/aplication/match_provider.dart';
-import 'features/match/presentation/create_match_page.dart';
+import 'package:uncotejo_front/shared/widgets/home_screen.dart';
 import 'shared/utils/auth_mock.dart';
 
 void main() async {
@@ -11,15 +8,12 @@ void main() async {
   await dotenv.load();
 
   // Simular inicio de sesión antes de arrancar la app
-  // await AuthMock.login(dotenv.env['AUTH_EMAIL']!, dotenv.env['AUTH_PASSWORD']!);
+  //await AuthMock.logout();
+  await AuthMock.login(dotenv.env['AUTH_EMAIL']!, dotenv.env['AUTH_PASSWORD']!);
+
 
   runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => MatchProvider()),
-      ],
-      child: const MyApp(),
-    ),
+    const MyApp(),
   );
 }
 
@@ -30,12 +24,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Uncotejo',
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const HomePage(),
-        '/create-match': (context) => const CreateMatchPage(),
-      },
+      title: 'UnCotejo',
+
+      home: const HomeScreen(), // Usamos MainScreen como Home
+
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,

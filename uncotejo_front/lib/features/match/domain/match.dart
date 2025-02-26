@@ -1,31 +1,36 @@
 import 'package:flutter/material.dart';
 import 'possible_dates.dart';
+import 'parsed_team.dart';
 
 class Match {
-  final int? id; 
-  final PossibleDates possibleDates; 
-  final TimeOfDay fixedTime; 
-  final String? link; 
-  final int? homeTeamId; 
-  final int? awayTeamId; 
-  final bool? homeTeamAttendance; 
-  final bool? awayTeamAttendance; 
+  final int? id;
+  final PossibleDates possibleDates;
+  final TimeOfDay fixedTime;
+  final String? link;
+  final int? homeTeamId;
+  final int? awayTeamId;
+  final bool? homeTeamAttendance;
+  final bool? awayTeamAttendance;
+  final Team? homeTeam; 
+  final Team? awayTeam;
 
   Match({
-    this.id, 
+    this.id,
     required this.possibleDates,
     required this.fixedTime,
-    this.link, 
+    this.link,
     this.homeTeamId,
     this.awayTeamId,
-    this.homeTeamAttendance, 
-    this.awayTeamAttendance, 
+    this.homeTeamAttendance,
+    this.awayTeamAttendance,
+    this.homeTeam,
+    this.awayTeam,
   });
 
   Map<String, dynamic> toJson() {
     return {
       'possibleDates': possibleDates.toJson(),
-      'fixedTime': "${fixedTime.hour}:${fixedTime.minute}"
+      'fixedTime': "${fixedTime.hour}:${fixedTime.minute}",
     };
   }
 
@@ -39,6 +44,8 @@ class Match {
       'awayTeamId': awayTeamId,
       'homeTeamAttendance': homeTeamAttendance ?? false,
       'awayTeamAttendance': awayTeamAttendance ?? false,
+      'homeTeam': homeTeam?.toJson(),
+      'awayTeam': awayTeam?.toJson(),
     };
   }
 
@@ -55,6 +62,8 @@ class Match {
       awayTeamId: json['awayTeamId'],
       homeTeamAttendance: json['homeTeamAttendance'] ?? false,
       awayTeamAttendance: json['awayTeamAttendance'] ?? false,
+      homeTeam: json['homeTeam'] != null ? Team.fromJson(json['homeTeam']) : null,
+      awayTeam: json['awayTeam'] != null ? Team.fromJson(json['awayTeam']) : null,
     );
   }
 }
