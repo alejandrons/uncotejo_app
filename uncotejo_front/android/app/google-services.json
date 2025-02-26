@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "53049895399",
+    "project_id": "uncotejoapp",
+    "storage_bucket": "uncotejoapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:53049895399:android:f2d7c5c70a42af65887542",
+        "android_client_info": {
+          "package_name": "com.example.uncotejo_front"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "53049895399-2t1lenaleq74edng041keo0rf435f7nm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.uncotejo_front",
+            "certificate_hash": "5f125b0ea7a06449d87ec580d77b4e0da78ed427"
+          }
+        },
+        {
+          "client_id": "53049895399-98je7imfnronkf91ms6aletqla6ou2o7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBI8C1VY7apN35rV0hjnNS1ZciDPavWnRw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "53049895399-98je7imfnronkf91ms6aletqla6ou2o7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
