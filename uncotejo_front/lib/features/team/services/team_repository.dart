@@ -1,5 +1,6 @@
-import '../domain/team.dart';
+import 'package:uncotejo_front/features/team/domain/team.dart';
 import 'package:uncotejo_front/shared/utils/http_client.dart';
+import 'package:uncotejo_front/features/match/domain/parsed_team.dart';
 
 class TeamRepository {
   static const String _teamEndpoint = "/team";
@@ -24,4 +25,16 @@ class TeamRepository {
   static Future<void> joinTeam(String linkAccess) async {
     await HttpClient.put("$_teamEndpoint/join/$linkAccess", {});
   }
+
+static Future<List<ParsedTeam>> getTeams() async {
+  final response = await HttpClient.get("$_teamEndpoint/");
+
+  // Asegurar que response es una lista antes de mapear
+  if (response is List) {
+    return response.map((json) => ParsedTeam.fromJson(json as Map<String, dynamic>)).toList();
+  } else {
+    throw Exception("La respuesta del servidor no es una lista de equipos");
+  }
+}
+
 }

@@ -11,6 +11,7 @@ class HttpClient {
       : throw Exception("BASE_URL no definida en .env");
 
   static Future<dynamic> get(String endpoint) async {
+    print('$baseUrl$endpoint');
     String? token = await AuthService.getToken();
     final response = await http.get(
       Uri.parse('$baseUrl$endpoint'),
@@ -19,10 +20,14 @@ class HttpClient {
         if (token != null) 'Authorization': 'Bearer $token',
       },
     );
-    return processResponse(response);
+    final processedResponse = jsonDecode(response.body);
+    print(processedResponse);
+    return processedResponse;
+    // print(response.body);
   }
 
-  static Future<dynamic> post(String endpoint, Map<String, dynamic> body) async {
+  static Future<dynamic> post(
+      String endpoint, Map<String, dynamic> body) async {
     String? token = await AuthService.getToken();
     final response = await http.post(
       Uri.parse('$baseUrl$endpoint'),

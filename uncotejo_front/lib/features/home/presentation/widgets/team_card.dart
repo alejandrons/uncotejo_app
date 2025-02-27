@@ -3,14 +3,12 @@ import 'package:flutter/material.dart';
 
 class TeamCard extends StatelessWidget {
   final String teamName;
-  final String slogan;
   final String shieldForm;
   final VoidCallback onJoinPressed;
 
   const TeamCard({
     super.key,
     required this.teamName,
-    required this.slogan,
     required this.shieldForm,
     required this.onJoinPressed,
   });
@@ -35,13 +33,7 @@ class TeamCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             // Slogan
-            Text(
-              slogan,
-              style: const TextStyle(
-                fontSize: 16,
-                color: Colors.grey,
-              ),
-            ),
+
             const SizedBox(height: 8),
             // Escudo del Equipo
             Image.asset(

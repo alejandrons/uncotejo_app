@@ -1,4 +1,4 @@
-class Team {
+class ParsedTeam {
   final int id;
   final String name;
   final String linkAccess;
@@ -8,7 +8,7 @@ class Team {
   final String? shieldInterior;
   final int teamLeaderId;
 
-  Team({
+  ParsedTeam({
     required this.id,
     required this.name,
     required this.linkAccess,
@@ -19,8 +19,8 @@ class Team {
     required this.teamLeaderId,
   });
 
-  factory Team.fromJson(Map<String, dynamic> json) {
-    return Team(
+  factory ParsedTeam.fromJson(Map<String, dynamic> json) {
+    return ParsedTeam(
       id: json['id'],
       name: json['name'],
       linkAccess: json['linkAccess'],

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:uncotejo_front/features/home/presentation/home_page.dart';
+import 'package:uncotejo_front/features/home/presentation/widgets/search_team_screen.dart';
 import 'package:uncotejo_front/features/team/presentation/team_screen.dart';
-
 import '../../features/match/presentation/list_all_matches.dart';
+import 'package:uncotejo_front/features/home/presentation/widgets/create_team_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -21,14 +21,13 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _screens = [
-      const HomePage(), // Pantalla de Home
+      const SearchTeamScreen(), // Pantalla de Home
       TeamScreen(onLeaveTeam: () => _onItemTapped(0)),
       const MatchListPage(),
       const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment:
-              CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
               "Eventos",
