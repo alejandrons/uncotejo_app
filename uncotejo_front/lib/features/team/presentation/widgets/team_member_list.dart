@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'team_member_card.dart';
 import 'package:uncotejo_front/shared/widgets/custom_widgets.dart';
-import '../../domain/user_mock.dart';
+import '/features/team/domain/user_mock.dart';
 
 class TeamMemberList extends StatefulWidget {
   final bool isCurrentUserLeader;
@@ -9,6 +9,7 @@ class TeamMemberList extends StatefulWidget {
   final String loggedInUserName;
   final Function(int) onExpelMember;
   final Function(int) onTransferLeadership;
+  final VoidCallback onRefreshTeam;
 
   const TeamMemberList({
     super.key,
@@ -17,6 +18,7 @@ class TeamMemberList extends StatefulWidget {
     required this.loggedInUserName,
     required this.onExpelMember,
     required this.onTransferLeadership,
+    required this.onRefreshTeam,
   });
 
   @override
@@ -45,11 +47,11 @@ class _TeamMemberListState extends State<TeamMemberList> {
         return Column(
           children: [
             TeamMemberCard(
-              name: member.firstName,
+              name: '${member.firstName} ${member.lastName}',
               isLeader: member.role == 'team_leader',
               isCurrentUserLeader: widget.isCurrentUserLeader,
               loggedInUserName: widget.loggedInUserName,
-              position: member.position, 
+              position: member.position,
               onLeaderTransfer: () => widget.onTransferLeadership(member.id),
               onExpel: () => widget.onExpelMember(member.id),
               isExpanded: expandedMemberName == member.firstName,

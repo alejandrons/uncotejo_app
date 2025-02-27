@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:uncotejo_front/features/home/presentation/widgets/search_team_screen.dart';
 import 'package:uncotejo_front/features/team/presentation/team_screen.dart';
 import '../../features/match/presentation/list_all_matches.dart';
-import 'package:uncotejo_front/features/home/presentation/widgets/create_team_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

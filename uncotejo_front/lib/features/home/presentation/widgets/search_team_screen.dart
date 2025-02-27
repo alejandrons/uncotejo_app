@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:uncotejo_front/features/home/presentation/widgets/create_team_screen.dart';
 import 'package:uncotejo_front/features/match/domain/parsed_team.dart';
 import 'package:uncotejo_front/features/home/presentation/widgets/team_card.dart';
 import 'package:uncotejo_front/features/team/services/team_repository.dart';
-import 'package:uncotejo_front/features/team/services/team_services.dart';
 
 class SearchTeamScreen extends StatefulWidget {
   const SearchTeamScreen({super.key});
