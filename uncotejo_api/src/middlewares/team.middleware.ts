@@ -7,6 +7,7 @@ export const validateTeam = [
     body('description').isString().notEmpty().withMessage('La descripción es obligatoria.'),
     body('slogan').isString().notEmpty().withMessage('El slogan es obligatorio.'),
     body('colorPrimary')
+        .optional()
         .matches(/^#([A-Fa-f0-9]{6})$/)
         .withMessage('El color primario debe estar en formato hexadecimal (#RRGGBB).'),
     body('colorSecondary')

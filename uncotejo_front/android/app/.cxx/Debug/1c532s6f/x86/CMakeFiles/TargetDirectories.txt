@@ -1,2 +1,0 @@
-D:/Users/Alejo/Documents/GitHub/uncotejo_app/uncotejo_front/android/app/.cxx/Debug/1c532s6f/x86/CMakeFiles/edit_cache.dir
-D:/Users/Alejo/Documents/GitHub/uncotejo_app/uncotejo_front/android/app/.cxx/Debug/1c532s6f/x86/CMakeFiles/rebuild_cache.dir
