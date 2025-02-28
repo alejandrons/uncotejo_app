@@ -14,10 +14,7 @@ router.post(
     '/login',
     validateLogin,
     handleValidationErrors,
-    async (
-        req: Request<{}, {}, Pick<IUser, 'name' | 'email'>>,
-        res: Response,
-    ) => {
+    async (req: Request<{}, {}, Pick<IUser, 'name' | 'email'>>, res: Response) => {
         try {
             const { name, email } = req.body;
             const result = await UserService.loginOrRegister(name, email);

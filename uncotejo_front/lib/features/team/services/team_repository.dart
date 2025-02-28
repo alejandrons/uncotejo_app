@@ -10,6 +10,11 @@ class TeamRepository {
     return Team.fromJson(response);
   }
 
+    static Future<Team> getTeamByUserId(int id) async {
+    final response = await HttpClient.get("$_teamEndpoint/$id/team");
+    return Team.fromJson(response);
+  }
+
   static Future<void> removePlayer(int playerId) async {
     await HttpClient.delete("$_teamEndpoint/remove/$playerId");
   }
@@ -26,15 +31,18 @@ class TeamRepository {
     await HttpClient.put("$_teamEndpoint/join/$linkAccess", {});
   }
 
-static Future<List<ParsedTeam>> getTeams() async {
-  final response = await HttpClient.get("$_teamEndpoint/");
+  static Future<List<ParsedTeam>> getTeams() async {
+    final response = await HttpClient.get("$_teamEndpoint/");
 
-  // Asegurar que response es una lista antes de mapear
-  if (response is List) {
-    return response.map((json) => ParsedTeam.fromJson(json as Map<String, dynamic>)).toList();
-  } else {
-    throw Exception("La respuesta del servidor no es una lista de equipos");
+    // Asegurar que response es una lista antes de mapear
+    if (response is List) {
+      return response
+          .map((json) => ParsedTeam.fromJson(json as Map<String, dynamic>))
+          .toList();
+    } else {
+      throw Exception("La respuesta del servidor no es una lista de equipos");
+    }
   }
-}
 
+  
 }

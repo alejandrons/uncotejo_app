@@ -65,6 +65,15 @@ export default class TeamService {
         return team;
     }
 
+    static async getTeamByUserId(userId: number): Promise<ITeam | null> {
+        const user = await User.findByPk(userId);
+        if (!user) throw makeErrorResponse(404, 'Usuario');
+        if (user.teamId === null) {
+            throw makeErrorResponse(404, 'Equipo');
+        }
+        return TeamService.getTeamById(user.teamId);
+    }
+
     static async getTeamByLink(linkAccess: string): Promise<ITeam | null> {
         const team = await Team.findOne({
             where: { linkAccess },

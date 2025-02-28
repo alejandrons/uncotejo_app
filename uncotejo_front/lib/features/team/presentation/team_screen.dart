@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import '../../auth/services/auth_services.dart';
 import '../domain/team.dart';
 import '../services/team_repository.dart';
 import 'widgets/team_member_list.dart';
+import 'package:jwt_decode/jwt_decode.dart';
+
 import 'package:uncotejo_front/shared/widgets/custom_widgets.dart';
 import 'package:uncotejo_front/shared/widgets/primary_button.dart';
 import 'package:uncotejo_front/shared/widgets/top_navigation.dart';
@@ -17,8 +20,7 @@ class TeamScreen extends StatefulWidget {
 }
 
 class _TeamScreenState extends State<TeamScreen> {
-  bool isCurrentUserLeader = true;
-  final String loggedInUserName = 'Juan';
+  bool? isCurrentUserLeader;
   Team? team;
   String? errorMessage;
 
@@ -30,8 +32,24 @@ class _TeamScreenState extends State<TeamScreen> {
 
   Future<void> _loadTeam() async {
     try {
-      final fetchedTeam = await TeamRepository.getTeamById(1); 
+      final String? token = await AuthService.getToken();
+      if (token == null) {
+        throw Exception("No se encontró un token de autenticación.");
+      }
+
+      Map<String, dynamic> decodedToken = Jwt.parseJwt(token);
+      final int? userId = decodedToken["id"];
+      final String? role = decodedToken["role"];
+
+      if (userId == null) {
+        throw Exception("No se encontró el ID del usuario en el token.");
+      }
+      if (role == null) {
+        throw Exception("No se encontró el rol del usuario en el token.");
+      }
+      final fetchedTeam = await TeamRepository.getTeamByUserId(userId);
       setState(() {
+        isCurrentUserLeader = role == "team_leader";
         team = fetchedTeam;
       });
     } catch (error) {
@@ -86,9 +104,8 @@ class _TeamScreenState extends State<TeamScreen> {
   Future<void> _leaveTeam() async {
     try {
       await TeamRepository.leaveTeam(team!.id);
-    
-    widget.onLeaveTeam();
 
+      widget.onLeaveTeam();
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('No se pudo abandonar el equipo: $error')),
@@ -174,9 +191,8 @@ class _TeamScreenState extends State<TeamScreen> {
             const CustomSizedBox(height: 20),
             Expanded(
               child: TeamMemberList(
-                isCurrentUserLeader: isCurrentUserLeader,
+                isCurrentUserLeader: isCurrentUserLeader!,
                 teamMembers: team!.players!,
-                loggedInUserName: loggedInUserName,
                 onExpelMember: _expelMember,
                 onTransferLeadership: _transferLeadership,
                 onRefreshTeam: _refreshTeam,
