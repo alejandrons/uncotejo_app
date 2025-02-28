@@ -7,6 +7,14 @@ plugins {
 
 }
 
+def keystorePropertiesFile = file("${rootProject.projectDir}/app/key.properties")
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+} else {
+    throw new GradleException("🚨 ERROR: No se encontró key.properties en ${keystorePropertiesFile}")
+}
+
 android {
     namespace = "com.example.uncotejo_front"
     compileSdk = flutter.compileSdkVersion
@@ -31,12 +39,21 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
+    
+    signingConfigs {
+        release {
+        storeFile file("${rootProject.projectDir}/app/" + keystoreProperties['storeFile'])
+        storePassword keystoreProperties['storePassword']
+        keyAlias keystoreProperties['keyAlias']
+        keyPassword keystoreProperties['keyPassword']
+        }
+    }
 
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.debug
+            signingConfig = signingConfigs.release
         }
     }
 }
