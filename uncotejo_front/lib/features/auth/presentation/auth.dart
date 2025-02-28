@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:uncotejo_front/features/auth/presentation/widgets/auth_screen.dart';
-import 'package:uncotejo_front/features/home/presentation/home_page.dart';
+import 'package:uncotejo_front/shared/widgets/home_screen.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
@@ -30,7 +30,7 @@ class _AuthPageState extends State<AuthPage> {
             )));
           }
           if (snapshot.hasData) {
-            return const HomePage();
+            return const HomeScreen();
           } else {
             return const AuthScreen();
           }

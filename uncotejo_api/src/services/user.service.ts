@@ -11,39 +11,21 @@ if (!JWT_SECRET) {
 
 export default class UserService {
     /**
-     * ✅ Registro de usuario
-     */
-    static async register(
-        data: IUser,
-    ): Promise<{ token: string; user: Pick<IUser, 'id' | 'email' | 'role'> }> {
-        const existingUser = await User.findOne({ where: { email: data.email } });
-
-        if (existingUser) {
-            throw makeErrorResponse(409, 'El email ya está registrado.');
-        }
-
-        const newUser = await User.create({
-            ...data,
-            role: data.role || Role.Player,
-        });
-        const token = jwt.sign({ id: newUser.id, role: newUser.role }, JWT_SECRET!, {
-            expiresIn: '24h',
-        });
-
-        return { token, user: { id: newUser.id, email: newUser.email, role: newUser.role } };
-    }
-
-    /**
      * ✅ Inicio de sesión
      */
-    static async login(
+    static async loginOrRegister(
+        name: string,
         email: string,
-        password: string,
     ): Promise<{ token: string; user: Pick<IUser, 'id' | 'email' | 'role'> }> {
-        const user = await User.findOne({ where: { email } });
+        let user = await User.findOne({ where: { email } });
 
-        if (!user || !user.checkPassword(password)) {
-            throw makeErrorResponse(401, 'Credenciales incorrectas.');
+        if (!user) {
+            const newUser = await User.create({
+                name,
+                email,
+                role: Role.Player,
+            });
+            user = newUser;
         }
 
         const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET!, {

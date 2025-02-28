@@ -1,7 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import '../utils/auth_service.dart';
+import '../../features/auth/services/auth_services.dart';
 import '../exceptions/exception_advisor.dart';
 
 class HttpClient {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:uncotejo_front/features/auth/services/auth_services.dart';
+import '../../services/auth_services.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -30,7 +30,7 @@ class _AuthScreenState extends State<AuthScreen> {
               ),
               ElevatedButton.icon(
                   onPressed: () {
-                     authService.handleSignIn();
+                    authService.handleSignIn(context);
                   },
                   style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
