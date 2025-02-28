@@ -16,48 +16,54 @@ class ApiException implements Exception {
 Future<dynamic> processResponse(http.Response response) async {
   try {
     final String responseBody = response.body.trim();
+    final int statusCode = response.statusCode;
 
-    // Verificar si el cuerpo de la respuesta está vacío
     if (responseBody.isEmpty) {
-      if (response.statusCode >= 200 && response.statusCode < 300) {
-        return {}; // Devolver un mapa vacío si la respuesta fue exitosa pero sin contenido
-      } else {
-        throw ApiException(
-          statusCode: response.statusCode,
-          message: 'Respuesta vacía con código de error ${response.statusCode}',
-        );
-      }
+      return _handleEmptyResponse(statusCode);
     }
 
-    // Intentar decodificar el JSON
-    try {
-      final dynamic jsonResponse = jsonDecode(responseBody);
-
-      if (response.statusCode >= 200 && response.statusCode < 300) {
-        return jsonResponse; // Puede ser un objeto o una lista
-      } else {
-        // Si la respuesta es un error con estructura JSON, extraer el mensaje de error
-        String errorMessage = 'Error inesperado en la petición';
-        if (jsonResponse is Map<String, dynamic> && jsonResponse.containsKey('error')) {
-          errorMessage = jsonResponse['error'];
-        }
-
-        throw ApiException(
-          statusCode: response.statusCode,
-          message: errorMessage,
-        );
-      }
-    } on FormatException catch (_) {
-      // Si el JSON no se pudo decodificar correctamente, mostrar el mensaje original del servidor
-      throw ApiException(
-        statusCode: response.statusCode,
-        message: 'Error en la respuesta del servidor: ${response.body}',
-      );
-    }
+    return _parseJsonResponse(responseBody, statusCode);
   } catch (e) {
     throw ApiException(
       statusCode: response.statusCode,
       message: 'Error al procesar la respuesta del servidor: $e',
     );
   }
+}
+
+dynamic _handleEmptyResponse(int statusCode) {
+  if (_isSuccess(statusCode)) {
+    return {}; // Successful but empty response
+  }
+  throw ApiException(
+    statusCode: statusCode,
+    message: 'Respuesta vacía con código de error $statusCode',
+  );
+}
+
+dynamic _parseJsonResponse(String responseBody, int statusCode) {
+  try {
+    final dynamic jsonResponse = jsonDecode(responseBody);
+
+    if (_isSuccess(statusCode)) {
+      return jsonResponse;
+    }
+
+    final String errorMessage = _extractErrorMessage(jsonResponse);
+    throw ApiException(statusCode: statusCode, message: errorMessage);
+  } on FormatException {
+    throw ApiException(
+      statusCode: statusCode,
+      message: 'Error en la respuesta del servidor: $responseBody',
+    );
+  }
+}
+
+bool _isSuccess(int statusCode) => statusCode >= 200 && statusCode < 300;
+
+String _extractErrorMessage(dynamic jsonResponse) {
+  if (jsonResponse is Map<String, dynamic> && jsonResponse.containsKey('error')) {
+    return jsonResponse['error'];
+  }
+  return 'Error inesperado en la petición';
 }

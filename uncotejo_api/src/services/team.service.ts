@@ -11,22 +11,24 @@ import sequelize from '../config/db';
 export default class TeamService {
     static async createTeam(data: ITeam, requesterId: number): Promise<ITeam> {
         const existingTeam = await Team.findOne({ where: { name: data.name } });
-        if (existingTeam) {
-            throw makeErrorResponse(409, 'El nombre del equipo ya está en uso.');
-        }
 
         let user = await User.findByPk(requesterId);
-        if (!user) {
-            throw makeErrorResponse(404, 'Usuario no encontrado.');
-        }
 
-        const isAlreadyLeader = await Team.findOne({ where: { teamLeaderId: requesterId } });
-        if (isAlreadyLeader) {
-            throw makeErrorResponse(
-                409,
-                'Ya eres líder de otro equipo. No puedes liderar más de un equipo.',
-            );
-        }
+        // if (existingTeam) {
+        //     throw makeErrorResponse(409, 'El nombre del equipo ya está en uso.');
+        // }
+
+        // if (!user) {
+        //     throw makeErrorResponse(404, 'Usuario no encontrado.');
+        // }
+
+        // const isAlreadyLeader = await Team.findOne({ where: { teamLeaderId: requesterId } });
+        // if (isAlreadyLeader) {
+        //     throw makeErrorResponse(
+        //         409,
+        //         'Ya eres líder de otro equipo. No puedes liderar más de un equipo.',
+        //     );
+        // }
 
         const linkAccess = `equipo-${uuidv4()}`;
         const newTeam = await Team.create({

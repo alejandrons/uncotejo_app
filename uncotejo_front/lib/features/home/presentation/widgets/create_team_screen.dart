@@ -1,10 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:uncotejo_front/features/team/services/team_repository.dart';
 import 'package:uncotejo_front/shared/utils/shield_list.dart'; // Import the shield list
 
-
-class CreateTeamScreen extends StatelessWidget {
+class CreateTeamScreen extends StatefulWidget {
   const CreateTeamScreen({super.key});
+
+  @override
+  State<CreateTeamScreen> createState() => _CreateTeamScreenState();
+}
+
+class _CreateTeamScreenState extends State<CreateTeamScreen> {
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _descriptionController = TextEditingController();
+  TextEditingController _sloganController = TextEditingController();
+
+  String? _selectedShield; // Almacena la ruta de la imagen seleccionada
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _descriptionController.dispose();
+    _sloganController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +35,7 @@ class CreateTeamScreen extends StatelessWidget {
             Navigator.pop(context);
           },
         ),
-        title: const Text('Create Team'),
+        title: const Text('Crea tu equipo'),
         centerTitle: true,
       ),
       body: Padding(
@@ -40,33 +59,27 @@ class CreateTeamScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     TextField(
+                      controller: _nameController,
                       decoration: const InputDecoration(
                         labelText: 'Nombre de equipo',
                         border: OutlineInputBorder(),
                       ),
-                      onChanged: (value) {
-                        // Handle Nombre de equipo input
-                      },
                     ),
                     const SizedBox(height: 16),
                     TextField(
+                      controller: _descriptionController,
                       decoration: const InputDecoration(
                         labelText: 'Descripcion',
                         border: OutlineInputBorder(),
                       ),
-                      onChanged: (value) {
-                        // Handle Descripcion input
-                      },
                     ),
                     const SizedBox(height: 16),
                     TextField(
+                      controller: _sloganController,
                       decoration: const InputDecoration(
-                        labelText: 'Slogan',
+                        labelText: 'Eslogan',
                         border: OutlineInputBorder(),
                       ),
-                      onChanged: (value) {
-                        // Handle Slogan input
-                      },
                     ),
                   ],
                 ),
@@ -95,6 +108,12 @@ class CreateTeamScreen extends StatelessWidget {
                         autoPlay: true,
                         enlargeCenterPage: true,
                         viewportFraction: 0.5,
+                        onPageChanged: (index, reason) {
+                          // Actualizar el escudo seleccionado
+                          setState(() {
+                            _selectedShield = shieldList[index];
+                          });
+                        },
                       ),
                       items: shieldList.map((shield) {
                         return Builder(
@@ -125,7 +144,7 @@ class CreateTeamScreen extends StatelessWidget {
               width: double.infinity, // Make the button full width
               child: ElevatedButton(
                 onPressed: () {
-                  // Handle the finalize action
+                  _createTeam(); // Lógica para crear el equipo
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
@@ -148,5 +167,51 @@ class CreateTeamScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _createTeam() async {
+    if (_nameController.text.isEmpty ||
+        _descriptionController.text.isEmpty ||
+        _sloganController.text.isEmpty ||
+        _selectedShield == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Por favor, completa todos los campos.')),
+      );
+      return;
+    }
+
+    String? _shield = shieldFormMap[_selectedShield];
+
+    final teamData = {
+      "name": _nameController.text.trim(),
+      "description": _descriptionController.text.trim(),
+      "slogan": _sloganController.text.trim(),
+      "shieldForm": _shield ?? "default.png",
+      "teamType": "futsal"
+    };
+
+    // print(teamData);
+
+    try {
+      final response = await TeamRepository.createTeam(teamData);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Partido creado exitosamente")),
+      );
+      _resetForm();
+      return response;
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error al crear partido: $error")),
+      );
+    }
+  }
+
+  void _resetForm() {
+    setState(() {
+      _nameController.clear();
+      _descriptionController.clear();
+      _sloganController.clear();
+      _selectedShield = null;
+    });
   }
 }

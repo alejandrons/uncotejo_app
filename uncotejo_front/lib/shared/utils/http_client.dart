@@ -21,7 +21,7 @@ class HttpClient {
       },
     );
     final processedResponse = jsonDecode(response.body);
-    print(processedResponse);
+    // print(processedResponse);
     return processedResponse;
     // print(response.body);
   }
@@ -37,7 +37,8 @@ class HttpClient {
       },
       body: jsonEncode(body),
     );
-    return processResponse(response);
+    final resp = processResponse(response);
+    return resp;
   }
 
   static Future<dynamic> put(String endpoint, Map<String, dynamic> body) async {

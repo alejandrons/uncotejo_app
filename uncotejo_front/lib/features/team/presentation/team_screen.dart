@@ -33,8 +33,7 @@ class _TeamScreenState extends State<TeamScreen> {
 
   Future<void> _loadTeam() async {
     try {
-      final fetchedTeam = await TeamRepository.getTeamById(
-          2); 
+      final fetchedTeam = await TeamRepository.getTeamById(2);
       setState(() {
         team = fetchedTeam;
       });
@@ -90,10 +89,8 @@ class _TeamScreenState extends State<TeamScreen> {
   Future<void> _leaveTeam() async {
     try {
       await TeamRepository.leaveTeam(team!.id);
-    
-    widget.onLeaveTeam();
 
-
+      widget.onLeaveTeam();
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('No se pudo abandonar el equipo: $error')),
