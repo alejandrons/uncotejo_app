@@ -8,8 +8,8 @@ import 'features/auth/presentation/auth.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
   await dotenv.load();
+  
   // Simular inicio de sesión antes de arrancar la app
   //await AuthMock.login(dotenv.env['AUTH_EMAIL']!, dotenv.env['AUTH_PASSWORD']!);
   runApp(
