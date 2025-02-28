@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uncotejo_front/features/auth/services/auth_services.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
@@ -35,9 +36,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         IconButton(
           icon: const Icon(Icons.person),
           onPressed: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Perfil de usuario')),
-            );
+            AuthService().handleSignOut(context);
           },
         ),
       ],
