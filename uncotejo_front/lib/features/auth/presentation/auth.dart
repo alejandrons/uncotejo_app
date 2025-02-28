@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:uncotejo_front/features/auth/presentation/auth_screen.dart';
+import 'package:uncotejo_front/features/auth/presentation/widgets/auth_screen.dart';
 import 'package:uncotejo_front/features/home/presentation/home_page.dart';
 
 class AuthPage extends StatefulWidget {
