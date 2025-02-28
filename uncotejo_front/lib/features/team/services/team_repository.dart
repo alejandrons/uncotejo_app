@@ -22,6 +22,10 @@ class TeamRepository {
     await HttpClient.delete("$_teamEndpoint/leave");
   }
 
+  static Future<void> joinTeam(String linkAccess) async {
+    await HttpClient.put("$_teamEndpoint/join/$linkAccess", {});
+  }
+
 static Future<List<ParsedTeam>> getTeams() async {
   final response = await HttpClient.get("$_teamEndpoint/");
 

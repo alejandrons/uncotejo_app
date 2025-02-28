@@ -3,7 +3,7 @@ class User {
   final String firstName;
   final String lastName;
   final String role;
-  final String? position; 
+  final String? position;
   final int teamId;
 
   User({
@@ -11,7 +11,7 @@ class User {
     required this.firstName,
     required this.lastName,
     required this.role,
-    this.position, 
+    this.position,
     required this.teamId,
   });
 
