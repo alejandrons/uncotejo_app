@@ -10,6 +10,7 @@ import 'package:uncotejo_front/shared/widgets/custom_widgets.dart';
 import 'package:uncotejo_front/shared/widgets/primary_button.dart';
 import 'package:uncotejo_front/shared/widgets/top_navigation.dart';
 import 'package:flutter/services.dart';
+import 'package:uncotejo_front/features/match/services/match_repository.dart';
 
 class TeamScreen extends StatefulWidget {
   final VoidCallback onLeaveTeam;
@@ -54,8 +55,11 @@ class _TeamScreenState extends State<TeamScreen> {
     try {
       await TeamRepository.removePlayer(memberId);
       setState(() {
-        team?.players.removeWhere((player) => player.id == memberId);
+      team?.players.removeWhere((player) => player.id == memberId);
       });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Has expulsado a ${team!.players.firstWhere((player) => player.id == memberId).name}')),
+      );
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('No se pudo expulsar al miembro: $error')),
@@ -69,6 +73,9 @@ Future<void> _transferLeadership(int memberId) async {
     setState(() {
       isCurrentUserLeader = false;
     });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Has transferido el liderazgo a ${team!.players.firstWhere((player) => player.id == memberId).name}')),
+    );
     _loadTeam(); // Reload the team data
   } catch (error) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -96,13 +103,19 @@ Future<void> _transferLeadership(int memberId) async {
 
 Future<void> _leaveTeam() async {
   try {
-    await TeamRepository.leaveTeam(team!.id);
-
-    if (isCurrentUserLeader!) {
+    if (isCurrentUserLeader! && team!.players.length > 1) {
       ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Debes transferir el liderazgo antes de abandonar el equipo')),
+        SnackBar(content: Text('Debes transferir el liderazgo antes de abandonar el equipo')),
+      );
+    } else if (isCurrentUserLeader! && (await MatchRepository.getMatchesForUserTeam()).isNotEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Debes completar los partidos pendientes antes de abandonar el equipo')),
       );
     } else {
+      await TeamRepository.leaveTeam(team!.id);
+      ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Has abandonado el equipo')),
+      );
       Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => const HomeScreen()),
       (Route<dynamic> route) => false,
@@ -114,7 +127,6 @@ Future<void> _leaveTeam() async {
     );
   }
 }
-
 
   void _refreshTeam() {
     _loadTeam();
