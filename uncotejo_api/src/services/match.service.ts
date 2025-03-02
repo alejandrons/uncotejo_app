@@ -188,7 +188,7 @@ export default class MatchService {
         if (hasDays && hasRange) {
             throw makeErrorResponse(
                 400,
-                'Debe enviarse una lista de días O un rango de fechas, no ambos.',
+                'Debe enviarse una lista de días o un rango de fechas, no ambos.',
             );
         }
 
