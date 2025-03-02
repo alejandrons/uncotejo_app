@@ -63,20 +63,22 @@ class _TeamScreenState extends State<TeamScreen> {
     }
   }
 
-  Future<void> _transferLeadership(int memberId) async {
-    try {
-      await TeamRepository.transferLeadership(memberId);
-      setState(() {
-        isCurrentUserLeader = false;
-      });
-    } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text(
-                "No se pudo transferir el liderazgo al jugador: ${team!.players.firstWhere((player) => player.id == memberId).name} $error")),
-      );
-    }
+Future<void> _transferLeadership(int memberId) async {
+  try {
+    await TeamRepository.transferLeadership(memberId);
+    setState(() {
+      isCurrentUserLeader = false;
+    });
+    _loadTeam(); // Reload the team data
+  } catch (error) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+          content: Text(
+              "No se pudo transferir el liderazgo al jugador: ${team!.players.firstWhere((player) => player.id == memberId).name} $error")),
+    );
   }
+}
+
 
   void _copyTeamLink() {
     final teamLink = team?.linkAccess;
@@ -96,10 +98,16 @@ Future<void> _leaveTeam() async {
   try {
     await TeamRepository.leaveTeam(team!.id);
 
-    Navigator.of(context).pushAndRemoveUntil(
+    if (isCurrentUserLeader!) {
+      ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Debes transferir el liderazgo antes de abandonar el equipo')),
+      );
+    } else {
+      Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => const HomeScreen()),
       (Route<dynamic> route) => false,
-    );
+      );
+    }
   } catch (error) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('No se pudo abandonar el equipo: $error')),
