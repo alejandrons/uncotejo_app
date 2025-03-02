@@ -48,4 +48,10 @@ class TeamRepository {
       throw Exception("La respuesta del servidor no es una lista de equipos");
     }
   }
+
+  // Agregar equipo
+  static Future<void> createTeam (Map<String, dynamic> team) async {
+    final response = await HttpClient.post("$_teamEndpoint/", team);
+    return response;
+  }
 }
