@@ -147,7 +147,8 @@ class _MatchListPageState extends State<MatchListPage> {
             onLeadingPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const CreateMatchPage()),
+                MaterialPageRoute(
+                    builder: (context) => const CreateMatchPage()),
               );
             },
           ),
@@ -191,8 +192,9 @@ class _MatchListPageState extends State<MatchListPage> {
                               imageUrl: shieldImageUrl,
                               attributes: [
                                 {
-                                  "text": match.possibleDates.days?.join(", ") ??
-                                      "Fechas no disponibles",
+                                  "text": match.possibleDates.days
+                                          ?.join(", ") ??
+                                      "${match.possibleDates.from} ${match.possibleDates.to}",
                                   "icon": Icons.calendar_today
                                 },
                                 {
@@ -207,8 +209,7 @@ class _MatchListPageState extends State<MatchListPage> {
                                   color: Colors.grey[600],
                                   onPressed: () {
                                     if (match.link != null) {
-                                      _pickTimeAndMakeMatch(context,
-                                          match);
+                                      _pickTimeAndMakeMatch(context, match);
                                     } else {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(

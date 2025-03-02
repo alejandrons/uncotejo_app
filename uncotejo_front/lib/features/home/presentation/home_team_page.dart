@@ -90,7 +90,7 @@ class _HomeTeamPage extends State<HomeTeamPage> {
                           attributes: [
                             {
                               "text": match.possibleDates.days?.join(", ") ??
-                                  "Fechas no disponibles",
+                                  "${match.possibleDates.from} ${match.possibleDates.to}",
                               "icon": Icons.calendar_today
                             },
                             {
@@ -100,7 +100,6 @@ class _HomeTeamPage extends State<HomeTeamPage> {
                             },
                           ],
                           buttons: [
-
                             SecondaryButton(
                               label: "Copiar link del Partido",
                               leftIcon: Icons.copy,
