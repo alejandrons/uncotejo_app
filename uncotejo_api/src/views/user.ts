@@ -8,4 +8,5 @@ export interface IUser {
     role: Role;
     teamId?: number | null;
     email: string;
+    password: string;
 }

@@ -3,6 +3,15 @@ import { IAuthRequest } from './auth.middleware';
 import { Role } from '../utils/enums';
 import { Response, NextFunction } from 'express';
 
+// Middleware para validar el registro de usuario
+export const validateRegister = [
+    body('name').isString().notEmpty().withMessage('El apellido es obligatorio.'),
+    body('email').isEmail().withMessage('Formato de email inválido.'),
+    body('password')
+        .isLength({ min: 6 })
+        .withMessage('La contraseña debe tener al menos 6 caracteres.'),
+];
+
 // Middleware para validar el inicio de sesión
 export const validateLogin = [
     body('email').isEmail().withMessage('Formato de email inválido.'),

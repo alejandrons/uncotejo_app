@@ -1,4 +1,4 @@
-import 'user_mock.dart'; // Add this line to import the User class
+import 'user_mock.dart'; // Importar la clase User
 
 class Team {
   final int id;
@@ -10,11 +10,12 @@ class Team {
   final String? colorSecondary;
   final String shieldForm;
   final String? shieldInterior;
-
   final String teamType;
   final int teamLeaderId;
-
-  final List<User>? players;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final User? teamLeader;
+  final List<User> players;
 
   Team({
     required this.id,
@@ -22,12 +23,15 @@ class Team {
     required this.description,
     required this.slogan,
     required this.linkAccess,
-    required this.colorPrimary,
-    required this.colorSecondary,
+    this.colorPrimary,
+    this.colorSecondary,
     required this.shieldForm,
-    required this.shieldInterior,
+    this.shieldInterior,
     required this.teamLeaderId,
     required this.teamType,
+    required this.createdAt,
+    required this.updatedAt,
+    this.teamLeader,
     required this.players,
   });
 
@@ -38,15 +42,24 @@ class Team {
       description: json['description'] ?? '',
       slogan: json['slogan'] ?? '',
       linkAccess: json['linkAccess'] ?? '',
-      colorPrimary: json['colorPrimary'] ?? '',
-      colorSecondary: json['colorSecondary'] ?? '',
-      shieldForm: json['shieldForm'] ?? '',
-      shieldInterior: json['shieldInterior'] ?? '',
+      colorPrimary: json['colorPrimary'] as String?,
+      colorSecondary: json['colorSecondary'] as String?,
+      shieldForm: json['shieldForm'] ?? 'default.png',
+      shieldInterior: json['shieldInterior'] as String?,
       teamType: json['teamType'] ?? '',
-      teamLeaderId: json['teamLeaderId'] ?? '',
-      players: (json['players'] as List)
-          .map((player) => User.fromJson(player))
-          .toList(),
+      teamLeaderId: json['teamLeaderId'] is int
+          ? json['teamLeaderId']
+          : int.tryParse(json['teamLeaderId'].toString()) ?? 0,
+      createdAt: DateTime.parse(json['createdAt']),
+      updatedAt: DateTime.parse(json['updatedAt']),
+      teamLeader: json['teamLeader'] != null
+          ? User.fromJson(json['teamLeader'] as Map<String, dynamic>)
+          : null,
+      players: json['players'] != null
+          ? (json['players'] as List)
+              .map((player) => User.fromJson(player as Map<String, dynamic>))
+              .toList()
+          : [],
     );
   }
 
@@ -63,7 +76,10 @@ class Team {
       'shieldInterior': shieldInterior,
       'teamType': teamType,
       'teamLeaderId': teamLeaderId,
-      'players': players?.map((player) => player.toJson()).toList(),
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
+      'teamLeader': teamLeader?.toJson(),
+      'players': players.map((player) => player.toJson()).toList(),
     };
   }
 }

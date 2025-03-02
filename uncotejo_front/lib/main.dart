@@ -1,13 +1,16 @@
-import 'package:firebase_core/firebase_core.dart';
+//import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
+import 'package:uncotejo_front/features/login/presentation/login_screen.dart';
+import 'package:uncotejo_front/features/login/presentation/register_screen.dart';
+import 'package:uncotejo_front/shared/widgets/home_screen.dart';
 import 'features/match/aplication/match_provider.dart';
-import 'features/auth/presentation/auth.dart';
+import 'features/Oauth/presentation/auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  //await Firebase.initializeApp();
   await dotenv.load();
   
   // Simular inicio de sesión antes de arrancar la app
@@ -21,6 +24,8 @@ void main() async {
     ),
   );
 }
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -35,7 +40,9 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.lightGreen,
         useMaterial3: true,
       ),
-      home: const AuthPage(),
+      scaffoldMessengerKey: scaffoldMessengerKey,
+
+      home: const LoginScreen(),
     );
   }
 }

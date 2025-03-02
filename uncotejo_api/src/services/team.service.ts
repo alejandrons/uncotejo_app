@@ -69,7 +69,7 @@ export default class TeamService {
         const user = await User.findByPk(userId);
         if (!user) throw makeErrorResponse(404, 'Usuario');
         if (user.teamId === null) {
-            throw makeErrorResponse(404, 'Equipo');
+            return null;
         }
         return TeamService.getTeamById(user.teamId);
     }

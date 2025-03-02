@@ -15,7 +15,7 @@ class MatchRepository {
         "fixedTime": "${match.fixedTime.hour.toString().padLeft(2, '0')}:${match.fixedTime.minute.toString().padLeft(2, '0')}"
       },
     ).catchError((error) {
-      ExceptionController.handleException(context, error);
+      ExceptionController.handleException( error);
       return Future<Map<String, dynamic>>.error(error);
     }).then((response) => Match.fromJson(response));
   }

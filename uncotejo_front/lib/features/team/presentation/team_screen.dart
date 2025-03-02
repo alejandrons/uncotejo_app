@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../auth/services/auth_services.dart';
+import 'package:uncotejo_front/shared/utils/token_service.dart';
+import '../../Oauth/services/auth_services.dart';
 import '../domain/team.dart';
 import '../services/team_repository.dart';
 import 'widgets/team_member_list.dart';
@@ -20,7 +21,7 @@ class TeamScreen extends StatefulWidget {
 }
 
 class _TeamScreenState extends State<TeamScreen> {
-  bool? isCurrentUserLeader;
+  bool isCurrentUserLeader = true;
   Team? team;
   String? errorMessage;
 
@@ -32,24 +33,11 @@ class _TeamScreenState extends State<TeamScreen> {
 
   Future<void> _loadTeam() async {
     try {
-      final String? token = await AuthService.getToken();
-      if (token == null) {
-        throw Exception("No se encontró un token de autenticación.");
-      }
-
-      Map<String, dynamic> decodedToken = Jwt.parseJwt(token);
+      final String? token = await TokenService.getToken();
+      Map<String, dynamic> decodedToken = Jwt.parseJwt(token!);
       final int? userId = decodedToken["id"];
-      final String? role = decodedToken["role"];
-
-      if (userId == null) {
-        throw Exception("No se encontró el ID del usuario en el token.");
-      }
-      if (role == null) {
-        throw Exception("No se encontró el rol del usuario en el token.");
-      }
-      final fetchedTeam = await TeamRepository.getTeamByUserId(userId);
+      final fetchedTeam = await TeamRepository.getTeamByUserId(userId!);
       setState(() {
-        isCurrentUserLeader = role == "team_leader";
         team = fetchedTeam;
       });
     } catch (error) {

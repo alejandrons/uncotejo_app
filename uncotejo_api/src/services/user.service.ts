@@ -11,21 +11,39 @@ if (!JWT_SECRET) {
 
 export default class UserService {
     /**
+     * ✅ Registro de usuario
+     */
+    static async register(
+        data: IUser,
+    ): Promise<{ token: string; user: Pick<IUser, 'id' | 'email' | 'role'> }> {
+        const existingUser = await User.findOne({ where: { email: data.email } });
+
+        if (existingUser) {
+            throw makeErrorResponse(409, 'El email ya está registrado.');
+        }
+
+        const newUser = await User.create({
+            ...data,
+            role: data.role || Role.Player,
+        });
+        const token = jwt.sign({ id: newUser.id, role: newUser.role }, JWT_SECRET!, {
+            expiresIn: '24h',
+        });
+
+        return { token, user: { id: newUser.id, email: newUser.email, role: newUser.role } };
+    }
+
+    /**
      * ✅ Inicio de sesión
      */
-    static async loginOrRegister(
-        name: string,
+    static async login(
         email: string,
+        password: string,
     ): Promise<{ token: string; user: Pick<IUser, 'id' | 'email' | 'role'> }> {
-        let user = await User.findOne({ where: { email } });
+        const user = await User.findOne({ where: { email } });
 
-        if (!user) {
-            const newUser = await User.create({
-                name,
-                email,
-                role: Role.Player,
-            });
-            user = newUser;
+        if (!user || !user.checkPassword(password)) {
+            throw makeErrorResponse(401, 'Credenciales incorrectas.');
         }
 
         const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET!, {
@@ -60,4 +78,10 @@ export default class UserService {
         const user = await UserService.getUserById(userId);
         return jwt.sign({ id: user!.id }, process.env.JWT_SECRET!, { expiresIn: '24h' });
     };
+
+    static async isInTeam(userId: number): Promise<Boolean> {
+        const user = await User.findByPk(userId);
+        if (!user) throw makeErrorResponse(404, 'Usuario no encontrado.');
+        return user.teamId !== null;
+    }
 }

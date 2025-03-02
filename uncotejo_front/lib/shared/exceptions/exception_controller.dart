@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'exception_advisor.dart';
+import 'package:uncotejo_front/shared/exceptions/exception_advisor.dart';
+
+import '../../main.dart';
 
 class ExceptionController {
-  static void handleException(BuildContext context, dynamic error) {
+  static void handleException(dynamic error) {
     String errorMessage;
     if (error is ApiException) {
       errorMessage = error.message;
@@ -10,7 +12,7 @@ class ExceptionController {
       errorMessage = 'Ha ocurrido un error inesperado.';
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
+    scaffoldMessengerKey.currentState?.showSnackBar(
       SnackBar(
         content: Text(errorMessage),
         backgroundColor: Colors.red,

@@ -10,10 +10,16 @@ class TeamRepository {
     return Team.fromJson(response);
   }
 
-    static Future<Team> getTeamByUserId(int id) async {
-    final response = await HttpClient.get("$_teamEndpoint/$id/team");
-    return Team.fromJson(response);
+static Future<Team?> getTeamByUserId(int id) async {
+  final response = await HttpClient.get("$_teamEndpoint/$id/team");
+
+  if (response == null || response.isEmpty || response["id"] == null) {
+    return null;
   }
+
+  return Team.fromJson(response);
+}
+
 
   static Future<void> removePlayer(int playerId) async {
     await HttpClient.delete("$_teamEndpoint/remove/$playerId");
@@ -43,6 +49,4 @@ class TeamRepository {
       throw Exception("La respuesta del servidor no es una lista de equipos");
     }
   }
-
-  
 }

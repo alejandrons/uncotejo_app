@@ -2,10 +2,31 @@ import { Router, Request, Response } from 'express';
 import UserService from '../services/user.service';
 import { IUser } from '../views/user';
 import { authMiddleware, IAuthRequest } from '../middlewares/auth.middleware';
-import { validateLogin, validateUpdateUser } from '../middlewares/user.middleware';
+import {
+    validateRegister,
+    validateLogin,
+    validateUpdateUser,
+} from '../middlewares/user.middleware';
 import { handleErrorResponse, handleValidationErrors } from '../utils/errorHandler';
 
 const router = Router();
+
+/**
+ * ✅ Registro de usuario
+ */
+router.post(
+    '/register',
+    validateRegister,
+    handleValidationErrors,
+    async (req: Request<{}, {}, IUser>, res: Response) => {
+        try {
+            const user = await UserService.register(req.body);
+            res.status(201).json(user);
+        } catch (error) {
+            handleErrorResponse(res, error);
+        }
+    },
+);
 
 /**
  * ✅ Inicio de sesión
@@ -14,10 +35,10 @@ router.post(
     '/login',
     validateLogin,
     handleValidationErrors,
-    async (req: Request<{}, {}, Pick<IUser, 'name' | 'email'>>, res: Response) => {
+    async (req: Request<{}, {}, Pick<IUser, 'email' | 'password'>>, res: Response) => {
         try {
-            const { name, email } = req.body;
-            const result = await UserService.loginOrRegister(name, email);
+            const { email, password } = req.body;
+            const result = await UserService.login(email, password);
             res.json(result);
         } catch (error) {
             handleErrorResponse(res, error);
@@ -43,5 +64,18 @@ router.put(
         }
     },
 );
+
+/**
+ * ✅ Esta un usuario en un equipo?
+ */
+router.get('/:id', authMiddleware, async (req: IAuthRequest, res: Response) => {
+    try {
+        const userId = parseInt(req.params.id);
+        const isInTeam: Boolean = await UserService.isInTeam(userId);
+        res.json(isInTeam);
+    } catch (error) {
+        handleErrorResponse(res, error);
+    }
+});
 
 export default router;

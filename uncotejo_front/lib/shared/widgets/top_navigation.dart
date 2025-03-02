@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:uncotejo_front/features/auth/services/auth_services.dart';
+import 'package:uncotejo_front/features/Oauth/services/auth_services.dart';
+import 'package:uncotejo_front/features/login/presentation/login_screen.dart';
+
+import '../utils/token_service.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
@@ -35,8 +38,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
         IconButton(
           icon: const Icon(Icons.person),
-          onPressed: () {
-            AuthService().handleSignOut(context);
+          onPressed: () async {
+            await TokenService.removeToken();
+            
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const LoginScreen()),
+              (Route<dynamic> route) => false,
+            );
           },
         ),
       ],

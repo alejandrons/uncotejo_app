@@ -4,6 +4,8 @@ import 'package:uncotejo_front/features/match/domain/parsed_team.dart';
 import 'package:uncotejo_front/features/home/presentation/widgets/team_card.dart';
 import 'package:uncotejo_front/features/team/services/team_repository.dart';
 
+import '../../../../shared/widgets/top_navigation.dart';
+
 class SearchTeamScreen extends StatefulWidget {
   const SearchTeamScreen({super.key});
 
@@ -23,36 +25,15 @@ class _SearchTeamState extends State<SearchTeamScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Buscar Equipo'),
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.group_add),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const CreateTeamScreen()),
-            );
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Notificaciones')),
-              );
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.person),
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Perfil de usuario')),
-              );
-            },
-          ),
-        ],
+      appBar: CustomAppBar(
+        title: 'Lista de equipos en búsqueda de partidos',
+        leadingIcon: Icons.group_add,
+        onLeadingPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const CreateTeamScreen()),
+          );
+        },
       ),
       body: FutureBuilder<List<ParsedTeam>>(
         future: _teamsFuture, // Obtiene los equipos del backend

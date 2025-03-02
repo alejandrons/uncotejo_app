@@ -4,7 +4,8 @@ import app from './app';
 
 dotenv.config();
 
-const PORT = process.env.PORT || 3000;
+const PORT = Number(process.env.PORT) || 3000;
+const DB_HOST = process.env.DB_HOST || 'localhost';
 
 sequelize
     .authenticate()
@@ -16,8 +17,8 @@ sequelize
             console.log('Database synchronized successfully.');
         }
 
-        app.listen(PORT, () => {
-            console.log(`Server running on http://localhost:${PORT}`);
+        app.listen(PORT, DB_HOST, () => {
+            console.log(`Server running on http://${DB_HOST}:${PORT}`);
         });
     })
     .catch((error) => {
