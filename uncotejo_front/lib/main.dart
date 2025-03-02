@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:uncotejo_front/features/login/presentation/login_screen.dart';
-import 'package:uncotejo_front/features/login/presentation/register_screen.dart';
-import 'package:uncotejo_front/shared/widgets/home_screen.dart';
 import 'features/match/aplication/match_provider.dart';
-import 'features/Oauth/presentation/auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

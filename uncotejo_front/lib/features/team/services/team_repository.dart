@@ -10,16 +10,15 @@ class TeamRepository {
     return Team.fromJson(response);
   }
 
-static Future<Team?> getTeamByUserId(int id) async {
-  final response = await HttpClient.get("$_teamEndpoint/$id/team");
+  static Future<Team?> getTeamByUserId(int id) async {
+    final response = await HttpClient.get("$_teamEndpoint/$id/team");
 
-  if (response == null || response.isEmpty || response["id"] == null) {
-    return null;
+    if (response == null || response.isEmpty || response["id"] == null) {
+      return null;
+    }
+    var jsonificado = Team.fromJson(response);
+    return jsonificado;
   }
-
-  return Team.fromJson(response);
-}
-
 
   static Future<void> removePlayer(int playerId) async {
     await HttpClient.delete("$_teamEndpoint/remove/$playerId");

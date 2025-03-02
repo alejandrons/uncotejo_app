@@ -45,14 +45,14 @@ class _TeamMemberListState extends State<TeamMemberList> {
         return Column(
           children: [
             TeamMemberCard(
-              name: '${member.firstName} ${member.lastName}',
+              name: member.name,
               isLeader: member.role == 'team_leader',
               isCurrentUserLeader: widget.isCurrentUserLeader,
               position: member.position,
               onLeaderTransfer: () => widget.onTransferLeadership(member.id),
               onExpel: () => widget.onExpelMember(member.id),
-              isExpanded: expandedMemberName == member.firstName,
-              onToggleExpand: () => _toggleExpand(member.firstName),
+              isExpanded: expandedMemberName == member.name,
+              onToggleExpand: () => _toggleExpand(member.name),
             ),
             const CustomSizedBox(height: 8),
           ],

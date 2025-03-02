@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 import 'package:uncotejo_front/features/home/presentation/widgets/search_team_screen.dart';
 import 'package:uncotejo_front/features/team/presentation/team_screen.dart';
-import 'package:uncotejo_front/features/team/services/team_repository.dart';
 import 'package:uncotejo_front/shared/utils/token_service.dart';
 import '../../features/home/presentation/home_team_page.dart';
 import '../../features/login/services/auth_services.dart';

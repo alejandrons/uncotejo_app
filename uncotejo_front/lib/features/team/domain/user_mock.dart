@@ -1,15 +1,13 @@
 class User {
   final int id;
-  final String firstName;
-  final String lastName;
+  final String name;
   final String role;
   final String? position;
   final int teamId;
 
   User({
     required this.id,
-    required this.firstName,
-    required this.lastName,
+    required this.name,
     required this.role,
     this.position,
     required this.teamId,
@@ -18,8 +16,7 @@ class User {
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['id'],
-      firstName: json['firstName'],
-      lastName: json['lastName'],
+      name: json['name'],
       role: json['role'],
       position: json['position'],
       teamId: json['teamId'],
@@ -29,8 +26,7 @@ class User {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'firstName': firstName,
-      'lastName': lastName,
+      'name': name,
       'role': role,
       'position': position,
       'teamId': teamId,
