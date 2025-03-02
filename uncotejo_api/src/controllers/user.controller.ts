@@ -65,4 +65,17 @@ router.put(
     },
 );
 
+/**
+ * ✅ Esta un usuario en un equipo?
+ */
+router.get('/:id', authMiddleware, async (req: IAuthRequest, res: Response) => {
+    try {
+        const userId = parseInt(req.params.id);
+        const isInTeam: Boolean = await UserService.isInTeam(userId);
+        res.json(isInTeam);
+    } catch (error) {
+        handleErrorResponse(res, error);
+    }
+});
+
 export default router;

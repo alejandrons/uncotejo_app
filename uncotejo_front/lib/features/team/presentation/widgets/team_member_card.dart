@@ -5,7 +5,6 @@ class TeamMemberCard extends StatelessWidget {
   final String name;
   final bool isLeader;
   final bool isCurrentUserLeader;
-  final String loggedInUserName;
   final String? position; // Allow position to be null
   final VoidCallback? onLeaderTransfer;
   final VoidCallback? onExpel;
@@ -17,7 +16,6 @@ class TeamMemberCard extends StatelessWidget {
     required this.name,
     this.isLeader = false,
     required this.isCurrentUserLeader,
-    required this.loggedInUserName,
     this.position, // Allow position to be null
     this.onLeaderTransfer,
     this.onExpel,
@@ -27,12 +25,8 @@ class TeamMemberCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isLoggedInUser = name == loggedInUserName;
 
     return Card(
-      color: isLoggedInUser
-          ? Colors.blue[50]
-          : null, // Highlight the card if it belongs to the logged-in user
       child: Column(
         children: [
           ListTile(
@@ -47,7 +41,7 @@ class TeamMemberCard extends StatelessWidget {
                 : (position != null && position!.isNotEmpty
                     ? Text(position!)
                     : const Text(
-                        'Jugador')), // Show position if not leader and position is not empty, otherwise show 'Jugador'
+                        'Jugador')),
             trailing: isCurrentUserLeader && !isLeader
                 ? (isExpanded
                     ? Icon(Icons.expand_less)

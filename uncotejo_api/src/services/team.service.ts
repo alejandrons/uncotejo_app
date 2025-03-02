@@ -11,11 +11,13 @@ import sequelize from '../config/db';
 export default class TeamService {
     static async createTeam(data: ITeam, requesterId: number): Promise<ITeam> {
         const existingTeam = await Team.findOne({ where: { name: data.name } });
+
+        let user = await User.findByPk(requesterId);
+
         if (existingTeam) {
             throw makeErrorResponse(409, 'El nombre del equipo ya está en uso.');
         }
 
-        let user = await User.findByPk(requesterId);
         if (!user) {
             throw makeErrorResponse(404, 'Usuario no encontrado.');
         }
@@ -63,6 +65,15 @@ export default class TeamService {
         });
         if (!team) throw makeErrorResponse(404, 'Equipo');
         return team;
+    }
+
+    static async getTeamByUserId(userId: number): Promise<ITeam | null> {
+        const user = await User.findByPk(userId);
+        if (!user) throw makeErrorResponse(404, 'Usuario');
+        if (user.teamId === null) {
+            return null;
+        }
+        return TeamService.getTeamById(user.teamId);
     }
 
     static async getTeamByLink(linkAccess: string): Promise<ITeam | null> {

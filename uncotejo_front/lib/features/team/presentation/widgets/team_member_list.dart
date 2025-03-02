@@ -6,7 +6,6 @@ import '/features/team/domain/user_mock.dart';
 class TeamMemberList extends StatefulWidget {
   final bool isCurrentUserLeader;
   final List<User> teamMembers;
-  final String loggedInUserName;
   final Function(int) onExpelMember;
   final Function(int) onTransferLeadership;
   final VoidCallback onRefreshTeam;
@@ -15,7 +14,6 @@ class TeamMemberList extends StatefulWidget {
     super.key,
     required this.isCurrentUserLeader,
     required this.teamMembers,
-    required this.loggedInUserName,
     required this.onExpelMember,
     required this.onTransferLeadership,
     required this.onRefreshTeam,
@@ -47,15 +45,14 @@ class _TeamMemberListState extends State<TeamMemberList> {
         return Column(
           children: [
             TeamMemberCard(
-              name: '${member.firstName} ${member.lastName}',
+              name: member.name,
               isLeader: member.role == 'team_leader',
               isCurrentUserLeader: widget.isCurrentUserLeader,
-              loggedInUserName: widget.loggedInUserName,
               position: member.position,
               onLeaderTransfer: () => widget.onTransferLeadership(member.id),
               onExpel: () => widget.onExpelMember(member.id),
-              isExpanded: expandedMemberName == member.firstName,
-              onToggleExpand: () => _toggleExpand(member.firstName),
+              isExpanded: expandedMemberName == member.name,
+              onToggleExpand: () => _toggleExpand(member.name),
             ),
             const CustomSizedBox(height: 8),
           ],

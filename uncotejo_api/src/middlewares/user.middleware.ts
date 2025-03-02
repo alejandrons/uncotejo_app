@@ -5,8 +5,7 @@ import { Response, NextFunction } from 'express';
 
 // Middleware para validar el registro de usuario
 export const validateRegister = [
-    body('firstName').isString().notEmpty().withMessage('El nombre es obligatorio.'),
-    body('lastName').isString().notEmpty().withMessage('El apellido es obligatorio.'),
+    body('name').isString().notEmpty().withMessage('El apellido es obligatorio.'),
     body('email').isEmail().withMessage('Formato de email inválido.'),
     body('password')
         .isLength({ min: 6 })

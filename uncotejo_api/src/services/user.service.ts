@@ -78,4 +78,10 @@ export default class UserService {
         const user = await UserService.getUserById(userId);
         return jwt.sign({ id: user!.id }, process.env.JWT_SECRET!, { expiresIn: '24h' });
     };
+
+    static async isInTeam(userId: number): Promise<Boolean> {
+        const user = await User.findByPk(userId);
+        if (!user) throw makeErrorResponse(404, 'Usuario no encontrado.');
+        return user.teamId !== null;
+    }
 }

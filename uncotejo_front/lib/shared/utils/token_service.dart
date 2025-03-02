@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-class AuthService {
+class TokenService {
   static final String _tokenKey = dotenv.env['AUTH_TOKEN_KEY'] ?? "";
     static final String baseUrl = _tokenKey.isNotEmpty ? _tokenKey : throw Exception("AUTH_TOKEN_KEY no definida en .env");
 

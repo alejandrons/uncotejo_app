@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:uncotejo_front/shared/utils/token_service.dart';
+import '../../../shared/widgets/home_screen.dart';
 import '../domain/team.dart';
 import '../services/team_repository.dart';
 import 'widgets/team_member_list.dart';
+import 'package:jwt_decode/jwt_decode.dart';
+
 import 'package:uncotejo_front/shared/widgets/custom_widgets.dart';
 import 'package:uncotejo_front/shared/widgets/primary_button.dart';
 import 'package:uncotejo_front/shared/widgets/top_navigation.dart';
@@ -17,8 +21,7 @@ class TeamScreen extends StatefulWidget {
 }
 
 class _TeamScreenState extends State<TeamScreen> {
-  bool isCurrentUserLeader = true;
-  final String loggedInUserName = 'Juan';
+  bool? isCurrentUserLeader;
   Team? team;
   String? errorMessage;
 
@@ -30,8 +33,14 @@ class _TeamScreenState extends State<TeamScreen> {
 
   Future<void> _loadTeam() async {
     try {
-      final fetchedTeam = await TeamRepository.getTeamById(1); 
+      final String? token = await TokenService.getToken();
+      Map<String, dynamic> decodedToken = Jwt.parseJwt(token!);
+      final int? userId = decodedToken["id"];
+      final String? role = decodedToken["role"];
+
+      final fetchedTeam = await TeamRepository.getTeamByUserId(userId!);
       setState(() {
+        isCurrentUserLeader = role == "team_leader";
         team = fetchedTeam;
       });
     } catch (error) {
@@ -45,7 +54,7 @@ class _TeamScreenState extends State<TeamScreen> {
     try {
       await TeamRepository.removePlayer(memberId);
       setState(() {
-        team?.players!.removeWhere((player) => player.id == memberId);
+        team?.players.removeWhere((player) => player.id == memberId);
       });
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -64,7 +73,7 @@ class _TeamScreenState extends State<TeamScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content: Text(
-                "No se pudo transferir el liderazgo al jugador: ${team!.players!.firstWhere((player) => player.id == memberId).firstName} ${team!.players!.firstWhere((player) => player.id == memberId).lastName}  $error")),
+                "No se pudo transferir el liderazgo al jugador: ${team!.players.firstWhere((player) => player.id == memberId).name} $error")),
       );
     }
   }
@@ -83,18 +92,21 @@ class _TeamScreenState extends State<TeamScreen> {
     }
   }
 
-  Future<void> _leaveTeam() async {
-    try {
-      await TeamRepository.leaveTeam(team!.id);
-    
-    widget.onLeaveTeam();
+Future<void> _leaveTeam() async {
+  try {
+    await TeamRepository.leaveTeam(team!.id);
 
-    } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('No se pudo abandonar el equipo: $error')),
-      );
-    }
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => const HomeScreen()),
+      (Route<dynamic> route) => false,
+    );
+  } catch (error) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('No se pudo abandonar el equipo: $error')),
+    );
   }
+}
+
 
   void _refreshTeam() {
     _loadTeam();
@@ -119,7 +131,22 @@ class _TeamScreenState extends State<TeamScreen> {
           title: 'Mi Equipo',
         ),
         body: const Center(
-          child: Text('Parece que no estas inscrito en ningún equipo'),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Parece que no tienes equipo",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 10),
+              Text(
+                "Puedes ir al inicio para unirte a uno o crear uno nuevo",
+                style: TextStyle(fontSize: 18, color: Colors.grey),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       );
     }
@@ -156,11 +183,6 @@ class _TeamScreenState extends State<TeamScreen> {
               textAlign: TextAlign.center,
             ),
             const CustomSizedBox(height: 8),
-            Text(
-              team!.teamType,
-              textAlign: TextAlign.center,
-            ),
-            const CustomSizedBox(height: 8),
             PrimaryButton(
               onPressed: _copyTeamLink,
               leftIcon: Icons.copy,
@@ -174,9 +196,8 @@ class _TeamScreenState extends State<TeamScreen> {
             const CustomSizedBox(height: 20),
             Expanded(
               child: TeamMemberList(
-                isCurrentUserLeader: isCurrentUserLeader,
-                teamMembers: team!.players!,
-                loggedInUserName: loggedInUserName,
+                isCurrentUserLeader: isCurrentUserLeader!,
+                teamMembers: team!.players,
                 onExpelMember: _expelMember,
                 onTransferLeadership: _transferLeadership,
                 onRefreshTeam: _refreshTeam,

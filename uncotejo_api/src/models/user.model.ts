@@ -23,13 +23,7 @@ export default class User extends Model<IUser> {
         type: DataType.STRING,
         allowNull: false,
     })
-    firstName!: string;
-
-    @Column({
-        type: DataType.STRING,
-        allowNull: false,
-    })
-    lastName!: string;
+    name!: string;
 
     @Column({
         type: DataType.ENUM(...Object.values(Gender)),

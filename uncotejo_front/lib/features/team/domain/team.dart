@@ -1,4 +1,4 @@
-import 'user_mock.dart'; // Add this line to import the User class
+import 'user_mock.dart'; // Importar la clase User
 
 class Team {
   final int id;
@@ -10,11 +10,9 @@ class Team {
   final String? colorSecondary;
   final String shieldForm;
   final String? shieldInterior;
-
-  final String teamType;
   final int teamLeaderId;
-
-  final List<User>? players;
+  final User? teamLeader;
+  final List<User> players;
 
   Team({
     required this.id,
@@ -22,33 +20,38 @@ class Team {
     required this.description,
     required this.slogan,
     required this.linkAccess,
-    required this.colorPrimary,
-    required this.colorSecondary,
+    this.colorPrimary,
+    this.colorSecondary,
     required this.shieldForm,
-    required this.shieldInterior,
+    this.shieldInterior,
     required this.teamLeaderId,
-    required this.teamType,
+    this.teamLeader,
     required this.players,
   });
 
   factory Team.fromJson(Map<String, dynamic> json) {
-    return Team(
-      id: json['id'] ?? 0,
-      name: json['name'] ?? '',
-      description: json['description'] ?? '',
-      slogan: json['slogan'] ?? '',
-      linkAccess: json['linkAccess'] ?? '',
-      colorPrimary: json['colorPrimary'] ?? '',
-      colorSecondary: json['colorSecondary'] ?? '',
-      shieldForm: json['shieldForm'] ?? '',
-      shieldInterior: json['shieldInterior'] ?? '',
-      teamType: json['teamType'] ?? '',
-      teamLeaderId: json['teamLeaderId'] ?? '',
-      players: (json['players'] as List)
-          .map((player) => User.fromJson(player))
-          .toList(),
-    );
-  }
+
+  return Team(
+    id: json['id'],
+    name: json['name'] ,
+    description: json['description'],
+    slogan: json['slogan'] ,
+    linkAccess: json['linkAccess'],
+    shieldForm: json['shieldForm'],
+    teamLeaderId: json['teamLeaderId'],
+
+    teamLeader: json['teamLeader'] != null
+        ? User.fromJson(json['teamLeader'] as Map<String, dynamic>)
+        : null,
+
+    players: json['players'] != null
+        ? (json['players'] as List)
+            .map((player) => User.fromJson(player as Map<String, dynamic>))
+            .toList()
+        : [],
+  );
+}
+
 
   Map<String, dynamic> toJson() {
     return {
@@ -61,9 +64,9 @@ class Team {
       'colorSecondary': colorSecondary,
       'shieldForm': shieldForm,
       'shieldInterior': shieldInterior,
-      'teamType': teamType,
       'teamLeaderId': teamLeaderId,
-      'players': players?.map((player) => player.toJson()).toList(),
+      'teamLeader': teamLeader?.toJson(),
+      'players': players.map((player) => player.toJson()).toList(),
     };
   }
 }

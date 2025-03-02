@@ -46,6 +46,17 @@ router.get('/:id', authMiddleware, async (req: Request, res: Response) => {
     }
 });
 
+router.get('/:id/team', authMiddleware, async (req: Request, res: Response) => {
+    try {
+        const userId = parseInt(req.params.id);
+        const team = await TeamService.getTeamByUserId(userId);
+
+        res.json(team);
+    } catch (error) {
+        handleErrorResponse(res, error);
+    }
+});
+
 router.get('/link/:linkAccess', authMiddleware, async (req: Request, res: Response) => {
     try {
         const { linkAccess } = req.params;

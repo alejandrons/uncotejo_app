@@ -1,21 +1,28 @@
+//import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:uncotejo_front/shared/widgets/home_screen.dart';
-import 'shared/utils/auth_mock.dart';
+import 'package:provider/provider.dart';
+import 'package:uncotejo_front/features/login/presentation/login_screen.dart';
+import 'features/match/aplication/match_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  //await Firebase.initializeApp();
   await dotenv.load();
-
+  
   // Simular inicio de sesión antes de arrancar la app
-  //await AuthMock.logout();
-  await AuthMock.login(dotenv.env['AUTH_EMAIL']!, dotenv.env['AUTH_PASSWORD']!);
-
-
+  //await AuthMock.login(dotenv.env['AUTH_EMAIL']!, dotenv.env['AUTH_PASSWORD']!);
   runApp(
-    const MyApp(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => MatchProvider()),
+      ],
+      child: const MyApp(),
+    ),
   );
 }
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -24,14 +31,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'UnCotejo',
-
-      home: const HomeScreen(), // Usamos MainScreen como Home
-
+      title: 'Uncotejo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightGreen),
+        primarySwatch: Colors.lightGreen,
         useMaterial3: true,
       ),
+      scaffoldMessengerKey: scaffoldMessengerKey,
+
+      home: const LoginScreen(),
     );
   }
 }
