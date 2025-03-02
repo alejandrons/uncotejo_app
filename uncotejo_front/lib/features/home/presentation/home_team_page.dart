@@ -40,7 +40,7 @@ class _HomeTeamPage extends State<HomeTeamPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: 'Lista de equipos en búsqueda de partidos',
+        title: 'Mis partidos de equipo',
         leadingIcon: Icons.group_add,
         onLeadingPressed: () {
           Navigator.push(

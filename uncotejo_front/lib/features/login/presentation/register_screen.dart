@@ -55,12 +55,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
 
     try {
-      await AuthService.register(
+      final response = await AuthService.register(
         _nameController.text,
         _emailController.text,
         _passwordController.text,
         context: context,
       );
+
+      if (response.containsKey('error')) {
+        throw response['error'];
+      }
 
       Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) => HomeScreen(),
@@ -101,10 +105,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   controller: _emailController, errorText: _emailError),
               const SizedBox(height: 16),
               PasswordInputField(
-                  controller: _passwordController, errorText: _passwordError),
+                label: "Contraseña",
+                controller: _passwordController,
+                errorText: _passwordError,
+              ),
               const SizedBox(height: 16),
               PasswordInputField(
-                  controller: _passwordController, errorText: _passwordError),
+                label: "Confirmar Contraseña",
+                controller: _confirmPasswordController,
+                errorText: _confirmPasswordError,
+              ),
               const SizedBox(height: 24),
               Center(
                 child: Column(

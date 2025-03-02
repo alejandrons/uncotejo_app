@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uncotejo_front/shared/utils/token_service.dart';
+import '../../../shared/widgets/home_screen.dart';
 import '../domain/team.dart';
 import '../services/team_repository.dart';
 import 'widgets/team_member_list.dart';
@@ -91,17 +92,21 @@ class _TeamScreenState extends State<TeamScreen> {
     }
   }
 
-  Future<void> _leaveTeam() async {
-    try {
-      await TeamRepository.leaveTeam(team!.id);
+Future<void> _leaveTeam() async {
+  try {
+    await TeamRepository.leaveTeam(team!.id);
 
-      widget.onLeaveTeam();
-    } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('No se pudo abandonar el equipo: $error')),
-      );
-    }
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => const HomeScreen()),
+      (Route<dynamic> route) => false,
+    );
+  } catch (error) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('No se pudo abandonar el equipo: $error')),
+    );
   }
+}
+
 
   void _refreshTeam() {
     _loadTeam();
@@ -126,7 +131,22 @@ class _TeamScreenState extends State<TeamScreen> {
           title: 'Mi Equipo',
         ),
         body: const Center(
-          child: Text('Parece que no estas inscrito en ningún equipo'),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Parece que no tienes equipo",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 10),
+              Text(
+                "Puedes ir al inicio para unirte a uno o crear uno nuevo",
+                style: TextStyle(fontSize: 18, color: Colors.grey),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       );
     }

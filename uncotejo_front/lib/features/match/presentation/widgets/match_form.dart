@@ -129,7 +129,6 @@ class _MatchFormState extends State<MatchForm> {
                 const SizedBox(width: 16),
                 PrimaryButton(
                   label: "Finalizar",
-                  color: Colors.red,
                   rightIcon: Icons.check,
                   onPressed: _submitForm,
                 ),

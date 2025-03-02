@@ -25,7 +25,6 @@ class HttpClient {
   static Future<dynamic> post(
       String endpoint, Map<String, dynamic> body) async {
     String? token = await TokenService.getToken();
-    print('$baseUrl$endpoint');
     final response = await http.post(
       Uri.parse('$baseUrl$endpoint'),
       headers: {

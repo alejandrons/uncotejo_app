@@ -26,7 +26,7 @@ class _SearchTeamState extends State<SearchTeamScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: 'Lista de equipos en búsqueda de partidos',
+        title: 'Lista de Equipos disponibles',
         leadingIcon: Icons.group_add,
         onLeadingPressed: () {
           Navigator.push(

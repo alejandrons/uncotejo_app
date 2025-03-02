@@ -40,11 +40,15 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      await AuthService.login(
+      final response = await AuthService.login(
         _emailController.text,
         _passwordController.text,
         context: context,
       );
+
+      if (response.containsKey('error')) {
+        throw response['error'];
+      }
       Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) => HomeScreen(),
       ));
@@ -75,7 +79,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: _emailController, errorText: _emailError),
               const SizedBox(height: 16),
               PasswordInputField(
-                  controller: _passwordController, errorText: _passwordError),
+                label: "Contraseña",
+                controller: _passwordController,
+                errorText: _passwordError,
+              ),
               const SizedBox(height: 24),
               Center(
                 child: Column(children: [

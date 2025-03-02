@@ -9,7 +9,7 @@ class CreateMatchPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(
-        title: 'Crear Equipo',
+        title: 'Crear Partido',
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
