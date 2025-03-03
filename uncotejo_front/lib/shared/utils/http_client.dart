@@ -25,7 +25,6 @@ class HttpClient {
   static Future<dynamic> post(
       String endpoint, Map<String, dynamic> body) async {
     String? token = await TokenService.getToken();
-    print(token);
 
     final response = await http.post(
       Uri.parse('$baseUrl$endpoint'),
@@ -71,7 +70,6 @@ class HttpClient {
 
   static Future<dynamic> delete(String endpoint) async {
     String? token = await TokenService.getToken();
-    print(token);
     final response = await http.delete(
       Uri.parse('$baseUrl$endpoint'),
       headers: {
@@ -79,7 +77,6 @@ class HttpClient {
         if (token != null) 'Authorization': 'Bearer $token',
       },
     );
-    print(response.body);
 
     final processedResponse = jsonDecode(response.body);
 
@@ -88,7 +85,6 @@ class HttpClient {
         processedResponse.containsKey('token')) {
       await TokenService.saveToken(processedResponse['token']);
     }
-    print(TokenService.getToken());
 
     return processedResponse;
   }

@@ -215,14 +215,10 @@ export default class TeamService {
     }
 
     static async leaveTeam(userId: number): Promise<void> {
-        let user = await User.findByPk(userId);
-        if (!user) {
-            throw makeErrorResponse(404, 'usuario');
-        }
+        const user = await User.findByPk(userId);
+        if (!user) throw makeErrorResponse(404, 'usuario');
+        if (!user.teamId) throw makeErrorResponse(404, 'Equipo no encontrado.');
 
-        if (user.teamId === null) {
-            throw makeErrorResponse(404, 'Equipo no encontrado.');
-        }
         const team = await Team.findByPk(user.teamId, {
             include: [
                 { model: User, as: 'teamLeader' },
@@ -232,36 +228,38 @@ export default class TeamService {
         if (!team) throw makeErrorResponse(404, 'Equipo');
 
         const playerCount = await team.$count('players');
-        if (playerCount <= 1) {
-            const ongoingMatches = await TeamService.findMatchesByTeam(team.id);
-            if (ongoingMatches.length > 0) {
-                throw makeErrorResponse(
-                    409,
-                    'El líder del equipo no puede abandonarlo hasta finalizar todos los partidos.',
-                );
-            }
+        const isTeamLeader = userId === team.teamLeaderId;
+        const isOnlyPlayer = playerCount <= 1;
+        const isPlayerInTeam = team.players.some((player) => player.id === userId);
 
-            user.role = Role.Player;
-            user.teamId = null;
-            await user.save({ fields: ['role', 'teamId'] });
-            await team.destroy();
-            return;
-        }
-
-        if (userId === team.teamLeaderId) {
+        if (!isPlayerInTeam) throw makeErrorResponse(400, 'El usuario no pertenece a este equipo.');
+        if (isTeamLeader && !isOnlyPlayer)
             throw makeErrorResponse(
                 409,
                 'El líder del equipo no puede abandonarlo si hay jugadores.',
             );
+
+        if (isOnlyPlayer) {
+            const ongoingMatches = await TeamService.findMatchesByTeam(team.id);
+            const allMatchesCancelable = ongoingMatches.every(
+                (match) => match.homeTeamId === team.id && match.awayTeamId === null,
+            );
+
+            if (!allMatchesCancelable)
+                throw makeErrorResponse(
+                    409,
+                    'El líder del equipo no puede abandonarlo hasta finalizar todos los partidos.',
+                );
+            if (ongoingMatches.length === 0 || allMatchesCancelable) {
+                await Match.destroy({ where: { homeTeamId: team.id } });
+            }
+            await team.destroy();
+        } else {
+            await team.$remove('players', userId);
         }
 
-        const isPlayerInTeam = team.players.some((player) => player.id === userId);
-
-        if (!isPlayerInTeam) {
-            throw makeErrorResponse(400, 'El usuario no pertenece a este equipo.');
-        }
         user.teamId = null;
-        await user.save({ fields: ['teamId'] });
-        await team.$remove('players', userId);
+        if (isOnlyPlayer) user.role = Role.Player;
+        await user.save({ fields: ['teamId', 'role'] });
     }
 }

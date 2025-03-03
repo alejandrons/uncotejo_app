@@ -1,6 +1,6 @@
-import 'package:uncotejo_front/features/team/domain/team.dart';
-import 'package:uncotejo_front/shared/utils/http_client.dart';
-import 'package:uncotejo_front/features/match/domain/parsed_team.dart';
+import '../../../features/team/domain/team.dart';
+import '../../../shared/utils/http_client.dart';
+import '../../match/domain/parsed_team.dart';
 
 class TeamRepository {
   static const String _teamEndpoint = "/team";

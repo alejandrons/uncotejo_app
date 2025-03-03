@@ -20,6 +20,7 @@ class MatchListPage extends StatefulWidget {
 
 class _MatchListPageState extends State<MatchListPage> {
   late Future<bool> _isUserInTeam;
+  // ignore: unused_field
   late Future<List<Match>> _matchesFuture;
 
   @override
@@ -58,12 +59,12 @@ class _MatchListPageState extends State<MatchListPage> {
   void _makeMatch(String link, TimeOfDay selectedTime,
       Map<String, dynamic> possibleDates) async {
     try {
-      final match = await MatchRepository.makeMatchByLink(
+      await MatchRepository.makeMatchByLink(
           link, selectedTime, possibleDates);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content: Text(
-                'Partido contra: ${match.homeTeam?.name}  pactado con éxito')),
+                'Partido pactado con éxito')),
       );
       setState(() {
         _matchesFuture = MatchRepository.getAllMatches();
@@ -142,7 +143,7 @@ class _MatchListPageState extends State<MatchListPage> {
 
         return Scaffold(
           appBar: CustomAppBar(
-            title: 'Lista de equipos en búsqueda de partidos',
+            title: 'Equipos buscando partidos',
             leadingIcon: Icons.group_add,
             onLeadingPressed: () {
               Navigator.push(

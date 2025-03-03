@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:uncotejo_front/features/login/presentation/login_screen.dart';
 
+import '../../features/login/presentation/login_screen.dart';
 import '../utils/token_service.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {

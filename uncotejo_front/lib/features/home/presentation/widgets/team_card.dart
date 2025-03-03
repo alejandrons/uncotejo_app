@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:uncotejo_front/features/team/services/team_repository.dart';
-import 'package:uncotejo_front/shared/widgets/primary_button.dart';
-
 import '../../../../shared/widgets/home_screen.dart';
+import '../../../../shared/widgets/primary_button.dart';
+import '../../../team/services/team_repository.dart';
 
 class TeamCard extends StatelessWidget {
   final String teamName;

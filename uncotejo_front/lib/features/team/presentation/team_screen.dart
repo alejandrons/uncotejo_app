@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:uncotejo_front/shared/utils/token_service.dart';
+import '../../../shared/utils/token_service.dart';
+import '../../../shared/widgets/custom_widgets.dart';
 import '../../../shared/widgets/home_screen.dart';
+import '../../../shared/widgets/primary_button.dart';
+import '../../../shared/widgets/top_navigation.dart';
+import '../../match/services/match_repository.dart';
 import '../domain/team.dart';
 import '../services/team_repository.dart';
 import 'widgets/team_member_list.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 
-import 'package:uncotejo_front/shared/widgets/custom_widgets.dart';
-import 'package:uncotejo_front/shared/widgets/primary_button.dart';
-import 'package:uncotejo_front/shared/widgets/top_navigation.dart';
 import 'package:flutter/services.dart';
-import 'package:uncotejo_front/features/match/services/match_repository.dart';
 
 class TeamScreen extends StatefulWidget {
   final VoidCallback onLeaveTeam;
@@ -107,7 +107,8 @@ Future<void> _leaveTeam() async {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Debes transferir el liderazgo antes de abandonar el equipo')),
       );
-    } else if (isCurrentUserLeader! && (await MatchRepository.getMatchesForUserTeam()).isNotEmpty) {
+      // home team id = !null away team id = 
+    } else if (isCurrentUserLeader! && (await MatchRepository.getMatchesForUserTeam()).any((match) => match.awayTeamId != null))  {
       ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Debes completar los partidos pendientes antes de abandonar el equipo')),
       );

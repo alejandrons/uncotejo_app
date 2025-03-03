@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:uncotejo_front/shared/exceptions/exception_advisor.dart';
 
 import '../../main.dart';
+import 'exception_advisor.dart';
 
 class ExceptionController {
   static void handleException(dynamic error) {

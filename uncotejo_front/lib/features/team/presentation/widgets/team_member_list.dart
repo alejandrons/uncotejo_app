@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../../../shared/widgets/custom_widgets.dart';
 import 'team_member_card.dart';
-import 'package:uncotejo_front/shared/widgets/custom_widgets.dart';
 import '/features/team/domain/user_mock.dart';
 
 class TeamMemberList extends StatefulWidget {

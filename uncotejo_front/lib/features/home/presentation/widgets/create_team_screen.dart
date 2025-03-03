@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:uncotejo_front/features/team/services/team_repository.dart';
-import 'package:uncotejo_front/shared/utils/shield_list.dart';
-import 'package:uncotejo_front/shared/utils/token_service.dart';
 import 'package:jwt_decode/jwt_decode.dart';
+import '../../../../shared/utils/shield_list.dart';
+import '../../../../shared/utils/token_service.dart';
 import '../../../../shared/widgets/home_screen.dart';
+import '../../../team/services/team_repository.dart';
 
 class CreateTeamScreen extends StatefulWidget {
   const CreateTeamScreen({super.key});
@@ -189,7 +189,7 @@ class _CreateTeamScreenState extends State<CreateTeamScreen> {
         onPressed: _createTeam,
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 16),
-          backgroundColor: Colors.blue,
+          backgroundColor: Colors.green,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),
           ),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:uncotejo_front/features/home/presentation/widgets/create_team_screen.dart';
-import 'package:uncotejo_front/features/match/domain/parsed_team.dart';
-import 'package:uncotejo_front/features/home/presentation/widgets/team_card.dart';
-import 'package:uncotejo_front/features/team/services/team_repository.dart';
 import '../../../../shared/widgets/top_navigation.dart';
+import '../../../match/domain/parsed_team.dart';
+import '../../../team/services/team_repository.dart';
+import 'create_team_screen.dart';
+import 'team_card.dart';
 
 class SearchTeamScreen extends StatefulWidget {
   const SearchTeamScreen({super.key});
@@ -27,13 +27,14 @@ class _SearchTeamState extends State<SearchTeamScreen> {
     });
   }
 
+  // ignore: unused_element
   Future<void> _joinTeam(String teamLink) async {
     try {
       await TeamRepository.joinTeam(teamLink);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Te has unido al equipo con éxito!')),
       );
-      _loadTeams(); // Refresca la lista de equipos
+      _loadTeams();
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error al unirse al equipo: $error')),
@@ -86,7 +87,7 @@ class _SearchTeamState extends State<SearchTeamScreen> {
                 teamName: team.name,
                 shieldForm: team.shieldForm,
                 teamLink: team.linkAccess,
-                onJoined: _loadTeams, // Recarga la lista tras unirse
+                onJoined: _loadTeams,
               );
             },
           );
