@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:uncotejo_front/shared/widgets/custom_widgets.dart';
+
+import '../../../../shared/widgets/custom_widgets.dart';
 
 class TeamMemberCard extends StatelessWidget {
   final String name;

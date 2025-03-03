@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:uncotejo_front/features/team/services/team_repository.dart';
-import 'package:uncotejo_front/shared/utils/shield_list.dart';
+import 'package:jwt_decode/jwt_decode.dart';
+import '../../../../shared/utils/shield_list.dart';
+import '../../../../shared/utils/token_service.dart';
 import '../../../../shared/widgets/home_screen.dart';
+import '../../../team/services/team_repository.dart';
 
 class CreateTeamScreen extends StatefulWidget {
   const CreateTeamScreen({super.key});
@@ -26,27 +28,42 @@ class _CreateTeamScreenState extends State<CreateTeamScreen> {
   }
 
   Future<void> _createTeam() async {
-    if (_nameController.text.isEmpty ||
-        _descriptionController.text.isEmpty ||
-        _sloganController.text.isEmpty ||
-        _selectedShield == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Por favor, completa todos los campos.')),
-      );
-      return;
-    }
-
-    String? _shield = shieldFormMap[_selectedShield];
-
-    final teamData = {
-      "name": _nameController.text.trim(),
-      "description": _descriptionController.text.trim(),
-      "slogan": _sloganController.text.trim(),
-      "shieldForm": _shield ?? "default.png",
-      "teamType": "futsal"
-    };
-
     try {
+      final String? token = await TokenService.getToken();
+      if (token == null) {
+        throw Exception('Token not found');
+      }
+
+      Map<String, dynamic> decodedToken = Jwt.parseJwt(token);
+      final String userRole = decodedToken["role"];
+
+      if (userRole == 'team_leader') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No puedes crear un equipo porque ya eres líder de otro equipo.')),
+        );
+        return;
+      }
+
+      if (_nameController.text.isEmpty ||
+          _descriptionController.text.isEmpty ||
+          _sloganController.text.isEmpty ||
+          _selectedShield == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Por favor, completa todos los campos.')),
+        );
+        return;
+      }
+
+      String? _shield = shieldFormMap[_selectedShield];
+
+      final teamData = {
+        "name": _nameController.text.trim(),
+        "description": _descriptionController.text.trim(),
+        "slogan": _sloganController.text.trim(),
+        "shieldForm": _shield ?? "default.png",
+        "teamType": "futsal"
+      };
+
       await TeamRepository.createTeam(teamData);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Equipo creado exitosamente")),
@@ -172,7 +189,7 @@ class _CreateTeamScreenState extends State<CreateTeamScreen> {
         onPressed: _createTeam,
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 16),
-          backgroundColor: Colors.blue,
+          backgroundColor: Colors.green,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),
           ),

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:uncotejo_front/shared/utils/token_service.dart';
+import '../../../shared/utils/token_service.dart';
+import '../../../shared/widgets/custom_widgets.dart';
 import '../../../shared/widgets/home_screen.dart';
+import '../../../shared/widgets/primary_button.dart';
+import '../../../shared/widgets/top_navigation.dart';
+import '../../match/services/match_repository.dart';
 import '../domain/team.dart';
 import '../services/team_repository.dart';
 import 'widgets/team_member_list.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 
-import 'package:uncotejo_front/shared/widgets/custom_widgets.dart';
-import 'package:uncotejo_front/shared/widgets/primary_button.dart';
-import 'package:uncotejo_front/shared/widgets/top_navigation.dart';
 import 'package:flutter/services.dart';
 
 class TeamScreen extends StatefulWidget {
@@ -54,8 +55,11 @@ class _TeamScreenState extends State<TeamScreen> {
     try {
       await TeamRepository.removePlayer(memberId);
       setState(() {
-        team?.players.removeWhere((player) => player.id == memberId);
+      team?.players.removeWhere((player) => player.id == memberId);
       });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Has expulsado a ${team!.players.firstWhere((player) => player.id == memberId).name}')),
+      );
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('No se pudo expulsar al miembro: $error')),
@@ -63,20 +67,25 @@ class _TeamScreenState extends State<TeamScreen> {
     }
   }
 
-  Future<void> _transferLeadership(int memberId) async {
-    try {
-      await TeamRepository.transferLeadership(memberId);
-      setState(() {
-        isCurrentUserLeader = false;
-      });
-    } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text(
-                "No se pudo transferir el liderazgo al jugador: ${team!.players.firstWhere((player) => player.id == memberId).name} $error")),
-      );
-    }
+Future<void> _transferLeadership(int memberId) async {
+  try {
+    await TeamRepository.transferLeadership(memberId);
+    setState(() {
+      isCurrentUserLeader = false;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Has transferido el liderazgo a ${team!.players.firstWhere((player) => player.id == memberId).name}')),
+    );
+    _loadTeam(); // Reload the team data
+  } catch (error) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+          content: Text(
+              "No se pudo transferir el liderazgo al jugador: ${team!.players.firstWhere((player) => player.id == memberId).name} $error")),
+    );
   }
+}
+
 
   void _copyTeamLink() {
     final teamLink = team?.linkAccess;
@@ -94,19 +103,31 @@ class _TeamScreenState extends State<TeamScreen> {
 
 Future<void> _leaveTeam() async {
   try {
-    await TeamRepository.leaveTeam(team!.id);
-
-    Navigator.of(context).pushAndRemoveUntil(
+    if (isCurrentUserLeader! && team!.players.length > 1) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Debes transferir el liderazgo antes de abandonar el equipo')),
+      );
+      // home team id = !null away team id = 
+    } else if (isCurrentUserLeader! && (await MatchRepository.getMatchesForUserTeam()).any((match) => match.awayTeamId != null))  {
+      ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Debes completar los partidos pendientes antes de abandonar el equipo')),
+      );
+    } else {
+      await TeamRepository.leaveTeam(team!.id);
+      ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Has abandonado el equipo')),
+      );
+      Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => const HomeScreen()),
       (Route<dynamic> route) => false,
-    );
+      );
+    }
   } catch (error) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('No se pudo abandonar el equipo: $error')),
     );
   }
 }
-
 
   void _refreshTeam() {
     _loadTeam();

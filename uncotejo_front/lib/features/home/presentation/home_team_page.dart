@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:uncotejo_front/features/home/presentation/widgets/create_team_screen.dart';
 import '../../match/services/match_repository.dart';
 import '../../match/domain/match.dart' as custom_match;
 import '../../../shared/widgets/secondary_button.dart';
 import '../../../shared/widgets/template_card.dart';
 import '../../../shared/widgets/top_navigation.dart';
+import 'widgets/create_team_screen.dart';
 
 class HomeTeamPage extends StatefulWidget {
   const HomeTeamPage({super.key});
