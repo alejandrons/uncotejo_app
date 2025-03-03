@@ -25,6 +25,8 @@ class HttpClient {
   static Future<dynamic> post(
       String endpoint, Map<String, dynamic> body) async {
     String? token = await TokenService.getToken();
+    print(token);
+
     final response = await http.post(
       Uri.parse('$baseUrl$endpoint'),
       headers: {
@@ -35,12 +37,13 @@ class HttpClient {
     );
 
     final processedResponse = jsonDecode(response.body);
-    
+
     // Guardar token si está en la respuesta
-    if (processedResponse is Map<String, dynamic> && processedResponse.containsKey('token')) {
+    if (processedResponse is Map<String, dynamic> &&
+        processedResponse.containsKey('token')) {
       await TokenService.saveToken(processedResponse['token']);
     }
-    
+
     return processedResponse;
   }
 
@@ -54,19 +57,21 @@ class HttpClient {
       },
       body: jsonEncode(body),
     );
-    
+
     final processedResponse = jsonDecode(response.body);
-    
+
     // Guardar token si está en la respuesta
-    if (processedResponse is Map<String, dynamic> && processedResponse.containsKey('token')) {
+    if (processedResponse is Map<String, dynamic> &&
+        processedResponse.containsKey('token')) {
       await TokenService.saveToken(processedResponse['token']);
     }
-    
+
     return processedResponse;
   }
 
   static Future<dynamic> delete(String endpoint) async {
     String? token = await TokenService.getToken();
+    print(token);
     final response = await http.delete(
       Uri.parse('$baseUrl$endpoint'),
       headers: {
@@ -74,6 +79,17 @@ class HttpClient {
         if (token != null) 'Authorization': 'Bearer $token',
       },
     );
-    return jsonDecode(response.body);
+    print(response.body);
+
+    final processedResponse = jsonDecode(response.body);
+
+    // Guardar token si está en la respuesta
+    if (processedResponse is Map<String, dynamic> &&
+        processedResponse.containsKey('token')) {
+      await TokenService.saveToken(processedResponse['token']);
+    }
+    print(TokenService.getToken());
+
+    return processedResponse;
   }
 }

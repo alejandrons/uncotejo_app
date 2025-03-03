@@ -76,7 +76,9 @@ export default class UserService {
 
     static generateNewToken = async (userId: number) => {
         const user = await UserService.getUserById(userId);
-        return jwt.sign({ id: user!.id }, process.env.JWT_SECRET!, { expiresIn: '24h' });
+        return jwt.sign({ id: user!.id, role: user?.role }, process.env.JWT_SECRET!, {
+            expiresIn: '24h',
+        });
     };
 
     static async isInTeam(userId: number): Promise<Boolean> {
